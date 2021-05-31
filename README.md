@@ -1,2 +1,2 @@
-# Sput
+# Sputnik
 Sput
