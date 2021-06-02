@@ -2,6 +2,8 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Sensor.h>
+#include <Wire.h>
+#include <MS5611.h>
 #define ss Serial3 
 #define fl Serial2
 
@@ -10,6 +12,10 @@ TinyGPSPlus gps;
 
 Adafruit_MPU6050 mpu;
 Adafruit_SSD1306 display = Adafruit_SSD1306(128, 32, &Wire);
+
+MS5611 ms5611;
+
+double referencePressure;
 
 
 
@@ -33,7 +39,7 @@ void setup() {
   
   display.display();
   
-  delay(500);
+//  delay(500);
   
   display.setTextSize(1);
   
@@ -41,18 +47,70 @@ void setup() {
   
   display.setRotation(0);
 
+
+  // Initialize MS5611 sensor
+  Serial.println("Initialize MS5611 Sensor");
+  
+  while(!ms5611.begin())
+  {
+  Serial.println("Could not find a valid MS5611 sensor, check wiring!");
+  delay(500);
+  }
+  
+  // Get reference pressure for relative altitude
+  referencePressure = ms5611.readPressure();
+  
+  // Check settings
+  checkSettings();
 }
 
-
+void checkSettings()
+{
+Serial.print("Oversampling: ");
+Serial.println(ms5611.getOversampling());
+}
 
 void loop() {
 
   GPS();
   Axel();  
+  Temp4();
 
-  delay(200);
+  Serial.println("\nend\n");
+
+  delay(1000);
 }
 
+
+
+
+void Temp4()
+{
+  
+  // Read true temperature & Pressure
+  double realTemperature = ms5611.readTemperature();
+  long realPressure = ms5611.readPressure();
+  
+  // Calculate altitude
+  float absoluteAltitude = ms5611.getAltitude(realPressure);
+  float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
+  
+  Serial.print("realTemp = ");
+  Serial.print(realTemperature);
+  Serial.println(" *C");
+  
+  Serial.print("Pressure = ");
+  Serial.print(realPressure);
+  Serial.println(" Pa");
+  
+  Serial.print(" absoluteAltitude = ");
+  Serial.print(absoluteAltitude);
+  Serial.print(" m\nrelativeAltitude = ");
+  Serial.print(relativeAltitude);
+  Serial.println(" m");
+
+
+}
 
 
 
