@@ -7,7 +7,6 @@
 #define ss Serial3 
 #define fl Serial2
 
-static const uint32_t GPSBaud = 9600; 
 TinyGPSPlus gps;
 
 Adafruit_MPU6050 mpu;
@@ -22,8 +21,8 @@ double referencePressure;
 void setup() {
 
   Serial.begin(9600);
-  ss.begin(GPSBaud);
-  fl.begin(GPSBaud);
+  ss.begin(9600);
+  fl.begin(9600);
 
   
   if (!mpu.begin())
@@ -74,7 +73,7 @@ void loop() {
 
   GPS();
   Axel();  
-  Temp4();
+  Pres();
 
   Serial.println("\nend\n");
 
@@ -87,17 +86,11 @@ void loop() {
 void Temp4()
 {
   
-  // Read true temperature & Pressure
-  double realTemperature = ms5611.readTemperature();
   long realPressure = ms5611.readPressure();
   
   // Calculate altitude
   float absoluteAltitude = ms5611.getAltitude(realPressure);
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
-  
-  Serial.print("Temp4 = ");
-  Serial.print(realTemperature);
-  Serial.println(" *C");
   
   Serial.print("Pressure = ");
   Serial.print(realPressure);
