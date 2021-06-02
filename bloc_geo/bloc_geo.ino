@@ -95,7 +95,7 @@ void Temp4()
   float absoluteAltitude = ms5611.getAltitude(realPressure);
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
   
-  Serial.print("realTemp = ");
+  Serial.print("Temp4 = ");
   Serial.print(realTemperature);
   Serial.println(" *C");
   
