@@ -83,7 +83,7 @@ void loop() {
 
 
 
-void Temp4()
+void Pres()
 {
   
   long realPressure = ms5611.readPressure();
