@@ -4,6 +4,8 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 #include <MS5611.h>
+
+#define addr 0x1E
 #define ss Serial3 
 #define fl Serial2
 
@@ -58,10 +60,30 @@ void setup() {
   
   // Get reference pressure for relative altitude
   referencePressure = ms5611.readPressure();
-  
+
+  StartComp();
+
   // Check settings
   checkSettings();
 }
+
+
+void StartComp()
+{
+
+    Wire.begin(); // инициализация I2C
+  
+    // Задаём режим работы датчика HMC5883:
+    Wire.beginTransmission(addr);
+    Wire.write(0x00); // выбираем регистр управления CRA (00)
+    Wire.write(0x70); // записываем в него 0x70 [усреднение по 8 точкам, 15 Гц, нормальные измерения]
+    Wire.write(0xA0); // записываем в регистр CRB (01) 0xA0 [чувствительность = 5]
+    Wire.write(0x00); // записываем в регистр Mode (02) 0x00 [бесконечный режим измерения]
+    Wire.endTransmission();
+  
+}
+
+
 
 void checkSettings()
 {
@@ -69,16 +91,56 @@ Serial.print("Oversampling: ");
 Serial.println(ms5611.getOversampling());
 }
 
+
+
 void loop() {
 
   GPS();
-  Axel();  
+  Axel();
+  Compas();
   Pres();
 
   Serial.println("\nend\n");
 
   delay(1000);
 }
+
+
+
+
+
+void Compas()
+{
+  
+  Wire.beginTransmission(addr);
+  Wire.write(0x03);
+  Wire.endTransmission();
+  
+  Wire.requestFrom(addr, 6);
+  while( Wire.available() )  
+  { 
+    int h = Wire.read();
+    int l = Wire.read();
+    int x = word(h, l);
+
+    int y = Wire.read();
+    y = y << 8;
+    y = y | Wire.read();
+
+    int z = Wire.read() << 8;
+    z |= Wire.read();
+
+    Serial.print("X = ");  
+    Serial.println(x, DEC); 
+    Serial.print("Y = ");  
+    Serial.println(y, DEC); 
+    Serial.print("Z = ");  
+    Serial.println(z, DEC); 
+    Serial.println();    
+  }
+  
+}
+
 
 
 
@@ -96,7 +158,7 @@ void Pres()
   Serial.print(realPressure);
   Serial.println(" Pa");
   
-  Serial.print(" absoluteAltitude = ");
+  Serial.print("absoluteAltitude = ");
   Serial.print(absoluteAltitude);
   Serial.print(" m\nrelativeAltitude = ");
   Serial.print(relativeAltitude);
@@ -112,7 +174,7 @@ void Axel()
 
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-  
+  double all=sqrt( pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2) ); 
   display.clearDisplay();
   display.setCursor(0, 0);
   
@@ -126,6 +188,9 @@ void Axel()
   Serial.print("Z: ");
   Serial.print(a.acceleration.z, 1);
   Serial.println(" m/s^2");
+  Serial.print("All acceleration: ");
+  Serial.print(all, 1);
+  Serial.println(" m/s^2");
   
   display.println("Accelerometer - m/s^2");
   display.print(a.acceleration.x, 1);
@@ -133,8 +198,13 @@ void Axel()
   display.print(a.acceleration.y, 1);
   display.print(", ");
   display.print(a.acceleration.z, 1);
+  display.print(", all:");
+  display.print(all, 1);
   display.println("");
   
+  display.println("");
+
+  all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
   Serial.print("Gyroscope ");
   Serial.print("X: ");
   Serial.print(g.gyro.x, 1);
@@ -145,6 +215,10 @@ void Axel()
   Serial.print("Z: ");
   Serial.print(g.gyro.z, 1);
   Serial.println(" rps");
+  Serial.print("All gyro: ");
+  Serial.print(all, 1);
+  Serial.println(" rps");
+
   
   display.println("Gyroscope - rps");
   display.print(g.gyro.x, 1);
@@ -152,6 +226,10 @@ void Axel()
   display.print(g.gyro.y, 1);
   display.print(", ");
   display.print(g.gyro.z, 1);
+  display.print("all: ");
+  display.print(all, 1);
+  display.println("");
+
   display.println("");
   
   display.display();
