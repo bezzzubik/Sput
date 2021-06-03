@@ -96,11 +96,14 @@ Serial.println(ms5611.getOversampling());
 void loop() {
 
   GPS();
+  
   Axel();
+  Serial.println("\n\n");
   Compas();
+  Serial.println("\n\n");
   Pres();
 
-  Serial.println("\nend\n");
+  Serial.println("\n\nend\n");
 
   delay(1000);
 }
