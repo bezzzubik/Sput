@@ -3,12 +3,12 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-#include <OneWire.h>
 #include <MS5611.h>
 
-#define addr 0x1E
+#define adr 0x1E
 #define ss Serial3 
 #define fl Serial2
+
 
 TinyGPSPlus gps;
 
@@ -21,9 +21,8 @@ double referencePressure;
 
 
 
-void setup() {
+void setupGeo() {
 
-  Serial.begin(9600);
   ss.begin(9600);
   fl.begin(9600);
 
@@ -75,7 +74,7 @@ void StartComp()
     Wire.begin(); // инициализация I2C
   
     // Задаём режим работы датчика HMC5883:
-    Wire.beginTransmission(addr);
+    Wire.beginTransmission(adr);
     Wire.write(0x00); // выбираем регистр управления CRA (00)
     Wire.write(0x70); // записываем в него 0x70 [усреднение по 8 точкам, 15 Гц, нормальные измерения]
     Wire.write(0xA0); // записываем в регистр CRB (01) 0xA0 [чувствительность = 5]
@@ -94,7 +93,7 @@ Serial.println(ms5611.getOversampling());
 
 
 
-void loop() {
+void geo() {
 
   GPS();
   
@@ -116,11 +115,11 @@ void loop() {
 void Compas()
 {
   
-  Wire.beginTransmission(addr);
+  Wire.beginTransmission(adr);
   Wire.write(0x03);
   Wire.endTransmission();
   
-  Wire.requestFrom(addr, 6);
+  Wire.requestFrom(adr, 6);
   while( Wire.available() )  
   { 
     int h = Wire.read();
@@ -257,7 +256,35 @@ void GPS()
   printFloat(gps.location.lat(), gps.location.isValid(), 11, 6);
   printFloat(gps.location.lng(), gps.location.isValid(), 12, 6);
   printInt(gps.location.age(), gps.location.isValid(), 5);
-  printDateTime(gps.date, gps.time);
+  
+  TinyGPSTime t=gps.time;
+  TinyGPSDate d=gps.date;
+//{
+  if (!d.isValid())
+  {
+    Serial.print(F("********** "));
+  }
+  else
+  {
+    char sz[32];
+    sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
+    Serial.print(sz);
+  }
+  
+  if (!t.isValid())
+  {
+    Serial.print(F("******** "));
+  }
+  else
+  {
+    char sz[32];
+    sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
+    Serial.print(sz);
+  }
+ 
+  printInt(d.age(), d.isValid(), 5);
+  smartDelay(0);
+  //}
   printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2);
   printFloat(gps.course.deg(), gps.course.isValid(), 7, 2);
   printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2);
@@ -347,35 +374,6 @@ static void printInt(unsigned long val, bool valid, int len)
   smartDelay(0);
 }
  
-
-
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t)
-{
-  if (!d.isValid())
-  {
-    Serial.print(F("********** "));
-  }
-  else
-  {
-    char sz[32];
-    sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
-    Serial.print(sz);
-  }
-  
-  if (!t.isValid())
-  {
-    Serial.print(F("******** "));
-  }
-  else
-  {
-    char sz[32];
-    sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
-    Serial.print(sz);
-  }
- 
-  printInt(d.age(), d.isValid(), 5);
-  smartDelay(0);
-}
  
 
 

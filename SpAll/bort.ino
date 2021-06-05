@@ -1,10 +1,10 @@
 #include <OneWire.h>
 
-#define K 10 //коэффициент пропорциональности регулятора
+#define KOF 10 //коэффициент пропорциональности регулятора
 #define TEMPNORM 15 //необходимая температура
 #define acs712_pin A11
 
-int zero; // уровень нуля, относительно которого измеряется ток, обычно VCC/2
+int zero;
 
 
 OneWire ds(10);
@@ -139,7 +139,7 @@ void normal(int temp)
 {
   
     int outputValue = 0; //необходимое значение сигнала для транзистора
-    outputValue = K*(TEMPNORM - temp); //расчет нужного значения сигнала для транзистора
+    outputValue = KOF*(TEMPNORM - temp); //расчет нужного значения сигнала для транзистора
     
     if(temp >= TEMPNORM ) //нужно ли передавать сигнал на транзистор
       voltage(0); //передастся 0
