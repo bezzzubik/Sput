@@ -98,14 +98,13 @@ void geo() {
   GPS();
   
   Axel();
-  Serial.println("\n\n");
+  Serial.println("\n");
   Compas();
-  Serial.println("\n\n");
+  Serial.println("\n");
   Pres();
+  Serial.println("\n\n");
 
-  Serial.println("\n\nend\n");
-
-  delay(1000);
+  delay(300);
 }
 
 
@@ -129,17 +128,19 @@ void Compas()
     int y = Wire.read();
     y = y << 8;
     y = y | Wire.read();
-
+    
     int z = Wire.read() << 8;
     z |= Wire.read();
 
+    float Abs=sqrt( x*x + y*y + z*z );
     Serial.print("X = ");  
     Serial.println(x, DEC); 
     Serial.print("Y = ");  
     Serial.println(y, DEC); 
     Serial.print("Z = ");  
-    Serial.println(z, DEC); 
-    Serial.println();    
+    Serial.println(z, DEC);
+    Serial.print("Abs field=");
+    Serial.println(Abs, 1);    
   }
   
 }

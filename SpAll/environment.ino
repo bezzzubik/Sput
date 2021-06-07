@@ -29,10 +29,10 @@ void env()
 {
 
   Dos();
-  delay(1000);
+  delay(100);
   DHT_Gas();
-  delay(1000);
-  Serial.println("\n\nend cicle\n");
+  delay(100);
+
 }
 
 

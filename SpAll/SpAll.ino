@@ -13,13 +13,12 @@ void setup() {
 
 void loop() {
 
-   Serial.println("Bort:\n");
+   Serial.println("Bort:");
    bort();
-   Serial.println("Geo:\n");
+   Serial.println("\nGeo:");
    geo();
-   Serial.println("Inv:\n");
+   Serial.println("Inv:");
    env();
-   Serial.println("Camera:\n");
    cam();
-   Serial.println("\n\nend cycle\n\n");
+   Serial.println("\n\nend cycle\n");
 }

@@ -5,9 +5,21 @@
 #define acs712_pin A11
 
 int zero;
-
+float VolAk;
 
 OneWire ds(10);
+
+void setupBort()
+{
+
+  zero = getSmoothedValue(); // определим нуль шкалы (до включения нагрузки)
+  analogReference( EXTERNAL );
+//  pinMode(8, OUTPUT);
+//  pinMode(9, OUTPUT);
+  pinMode(37, OUTPUT);
+
+  
+}
 
 
 void bort()
@@ -15,8 +27,8 @@ void bort()
 
   heater( Temp() );
   Amper();
-  Voltage();
-  return;
+  VolAk=Voltage();
+  delay(100);
 }
 
 
@@ -219,7 +231,7 @@ int getCurrent(int adc) {
 
 
 
-void Voltage()
+float Voltage()
 {
   int analogInput, value;
   float vout, vin, R1, R2;
@@ -254,18 +266,5 @@ void Voltage()
     delay(500);
   }
 
-  return;
-}
-
-
-void setupBort()
-{
-
-  zero = getSmoothedValue(); // определим нуль шкалы (до включения нагрузки)
-  analogReference( EXTERNAL );
-//  pinMode(8, OUTPUT);
-//  pinMode(9, OUTPUT);
-  pinMode(37, OUTPUT);
-
-  
+  return vin;
 }
