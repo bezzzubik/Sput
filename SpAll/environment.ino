@@ -15,7 +15,7 @@ ClimateGuard_RadSens1v2 radSens(RS_DEFAULT_I2C_ADDRESS); /*Constructor of the cl
                                                            sets the address parameter of I2C sensor.
                                                            Default address: 0x66.*/
 
-void setup()
+void setupEnv()
 {
 
   Serial.begin(115200);  
@@ -25,7 +25,7 @@ void setup()
 }
 
 
-void loop()
+void env()
 {
 
   Dos();

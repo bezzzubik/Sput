@@ -1,0 +1,12 @@
+void setupCam()
+{
+
+
+}
+
+void cam()
+{
+
+  
+  
+}
