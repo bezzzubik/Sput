@@ -12,7 +12,6 @@ void setup() {
 
 
 void loop() {
-
    Serial.println("Bort:");
    bort();
    Serial.println("\nGeo:");
