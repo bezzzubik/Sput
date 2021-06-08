@@ -203,7 +203,8 @@ int getSmoothedValue(){
 
 
 
-void Amper() {
+void Amper() 
+{
 
   int sensorValue = getSmoothedValue(); // читаем значение с АЦП и выводим в монитор
   Serial.print('I');
@@ -211,10 +212,9 @@ void Amper() {
   int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
   Serial.print(c);
   Serial.println(" mA");
-  
-  
+    
   delay(100);
-  //Serial1.println("Всем привет! ");
+
 }
 
 
