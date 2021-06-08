@@ -10,12 +10,13 @@ void setupCam()
 {
  
     digitalWrite(CAMERA_ON_OFF, HIGH); //камера будет включаться и выключаться через реле, поэтому нужно сделать имитацию кнопки. кнопку питания нажали
-    delay(2000);//держим
+    delay(1000);//держим
     digitalWrite(CAMERA_ON_OFF, LOW);//отпустили
     digitalWrite(CAMERA_PLAY_STOP, HIGH);//кнопку записи нажали
     delay(1000);//держим
     digitalWrite(CAMERA_PLAY_STOP, LOW);//отпустили
     Time=millis();
+    digitalWrite(CAMERA_ON_OFF, HIGH);// включаем подпитку камеры
 
 }
 
@@ -26,7 +27,7 @@ void cam()
    if((millis - Time >= maxTime) || (VolAk < 10) )
    {
       bool VT=true;
-      digitalWrite(CAM, LOW);
+      digitalWrite(CAMERA_ON_OFF, LOW);
    }
 
 }
