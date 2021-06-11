@@ -47,53 +47,63 @@ int Temp()
   int celsius;
   int celA=-70;
   
-  while ( ds.search(addr)) {
-    
-      if (OneWire::crc8(addr, 7) != addr[7]) {
-        Serial.println("CRC is not valid!");
+  while (ds.search(addr)) {
+
+  if (OneWire::crc8(addr, 7) != addr[7]) {
       return celA;
-    }
-  
-switch (addr[0]) {
+  }
+ 
+ 
+  // the first ROM byte indicates which chip
+  switch (addr[0]) {
     case 0x10:
-    type_s = 1;
+      type_s = 1;
+      break;
+    case 0x28:
+      type_s = 0;
+      break;
+    case 0x22:
+      type_s = 0;
       break;
     default:
-      type_s = 0;
+      return celA;
   } 
 
+  ds.reset();
+  ds.select(addr);
+  ds.write(0x44, 1);        // start conversion, with parasite power on at the end
   
-    ds.reset();
-    ds.select(addr);
-    ds.write(0x44, 1);
-    
-    delay(1000);
-    
-    present = ds.reset();
-    ds.select(addr);
-    ds.write(0xBE);
-    
-    for ( i = 0; i < 9; i++)
-      data[i] = ds.read();
-    
-    OneWire::crc8(data, 8);
-    
-    int16_t raw = (data[1] << 8) | data[0];
-    if (type_s) {
-      raw = raw << 3;
-      if (data[7] == 0x10) {
+  delay(750);     // maybe 750ms is enough, maybe not
+  // we might do a ds.depower() here, but the reset will take care of it.
+  
+  present = ds.reset();
+  ds.select(addr);    
+  ds.write(0xBE);         // Read Scratchpad
 
-        raw = (raw & 0xFFF0) + 12 - data[6];
-      }
-    } else {
-      byte cfg = (data[4] & 0x60);
+  for ( i = 0; i < 9; i++)           // we need 9 bytes
+    data[i] = ds.read();
+  OneWire::crc8(data, 8);
 
-      if (cfg == 0x00) raw = raw & ~7;  
-      else if (cfg == 0x20) raw = raw & ~3;
-      else if (cfg == 0x40) raw = raw & ~1;
-      
+  // Convert the data to actual temperature
+  // because the result is a 16 bit signed integer, it should
+  // be stored to an "int16_t" type, which is always 16 bits
+  // even when compiled on a 32 bit processor.
+  int16_t raw = (data[1] << 8) | data[0];
+  if (type_s) {
+    raw = raw << 3; // 9 bit resolution default
+    if (data[7] == 0x10) {
+      // "count remain" gives full 12 bit resolution
+      raw = (raw & 0xFFF0) + 12 - data[6];
     }
-      
+  } else {
+    byte cfg = (data[4] & 0x60);
+    // at lower res, the low bits are undefined, so let's zero them
+    if (cfg == 0x00) raw = raw & ~7;  // 9 bit resolution, 93.75 ms
+    else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
+    else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
+    //// default is 12 bit resolution, 750 ms conversion time
+  }
+
     celsius = (int)raw / 16;
 
     if (j==2)
@@ -220,7 +230,7 @@ return value;
 
 void Amper() {
 
-  int sensorValue = getSmoothedValue(); // читаем значение с АЦП и выводим в монитор
+  int sensorValue = analogRead(acs712_pin); // читаем значение с АЦП и выводим в монитор
   Serial.print('I');
 Serial.print(" = ");
 int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор

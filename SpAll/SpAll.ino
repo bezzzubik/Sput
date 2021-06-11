@@ -5,9 +5,8 @@ void setup() {
   setupBort();
   setupGeo();
   setupEnv();
-  //setupCam();
-  Serial1.begin(9600);
-
+  setupCam();
+  delay(1000);
 }
 
 
@@ -18,6 +17,6 @@ void loop() {
    geo();
    Serial.println("Inv:");
    env();
-//   cam();
+   cam();
    Serial.println("\n\nend cycle\n");
 }

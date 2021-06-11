@@ -132,7 +132,7 @@ void Compas()
     int z = Wire.read() << 8;
     z |= Wire.read();
 
-    float Abs=sqrt( x*x + y*y + z*z );
+    int Abs=(int)sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
     Serial.print("X = ");  
     Serial.println(x, DEC); 
     Serial.print("Y = ");  
@@ -140,7 +140,7 @@ void Compas()
     Serial.print("Z = ");  
     Serial.println(z, DEC);
     Serial.print("Abs field=");
-    Serial.println(Abs, 1);    
+    Serial.println(Abs);
   }
   
 }
