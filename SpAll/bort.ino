@@ -4,8 +4,10 @@
 #define TEMPNORM 15 //необходимая температура
 #define acs712_pin A11
 
-int zero;
+
+int zero = 506; // уровень нуля, относительно которого измеряется ток, обычно VCC/2
 float VolAk;
+
 
 OneWire ds(10);
 
@@ -21,13 +23,12 @@ void setupBort()
   
 }
 
-
 void bort()
 {
 
-  heater( Temp() );
-  Amper();
-  VolAk=Voltage();
+heater( Temp() );
+Amper();
+VolAk=Voltage();
   delay(100);
 }
 
@@ -114,16 +115,16 @@ int dError=0; //переменная обработки ошибки
 
 void heater(int temp)
 {
-  
-  if (temp < -60) //если функция выявления ошибок возвращает истину
-     dError++; //к переменной добавляется 1, иначе она обнуляется
-  else
-    dError=0;
-  
-  if (dError > 5) //проверка ошибок:если переменная ошибок выявила
-      error(); //более 5 ошибочных значений, то начинает работать
-  else //функция обработки ошибки, иначе идет нормальный
-      normal(temp); //режим работы программы
+
+if (temp < -60) //если функция выявления ошибок возвращает истину
+dError++; //к переменной добавляется 1, иначе она обнуляется
+else
+dError=0;
+
+if (dError > 5) //проверка ошибок:если переменная ошибок выявила
+error(); //более 5 ошибочных значений, то начинает работать
+else //функция обработки ошибки, иначе идет нормальный
+normal(temp); //режим работы программы
 
 }
 
@@ -133,14 +134,14 @@ void heater(int temp)
 
 void voltage(int out) //функция передачи сигнала на затвор транзистора
 {
-    digitalWrite(11, out);
+digitalWrite(11, out);
 
-    if (out != 0)
-        digitalWrite(37, HIGH);  
-    else
-        digitalWrite(37, LOW);
-    
-    return ;
+if (out != 0)
+digitalWrite(37, HIGH);
+else
+digitalWrite(37, LOW);
+
+return ;
 }
 
 
@@ -149,20 +150,20 @@ void voltage(int out) //функция передачи сигнала на за
 
 void normal(int temp)
 {
-  
-    int outputValue = 0; //необходимое значение сигнала для транзистора
-    outputValue = KOF*(TEMPNORM - temp); //расчет нужного значения сигнала для транзистора
-    
-    if(temp >= TEMPNORM ) //нужно ли передавать сигнал на транзистор
-      voltage(0); //передастся 0
-    else
-      voltage(outputValue); //иначе передается нужное значение
-    
-    
-/*    Serial.print("output = "); //значения нужного для подачи сигнала
-    Serial.println(outputValue);
-*/  
-    return ;
+
+int outputValue = 0; //необходимое значение сигнала для транзистора
+outputValue = KOF*(TEMPNORM - temp); //расчет нужного значения сигнала для транзистора
+
+if(temp >= TEMPNORM ) //нужно ли передавать сигнал на транзистор
+voltage(0); //передастся 0
+else
+voltage(outputValue); //иначе передается нужное значение
+
+
+/* Serial.print("output = "); //значения нужного для подачи сигнала
+Serial.println(outputValue);
+*/
+return ;
 }
 
 
@@ -172,14 +173,14 @@ void normal(int temp)
 
 void error(){ //функция обработки ошибок
 
-  Serial.print("Attention, possibly disabled signal");
-  
-  
-  Serial.println("The heater runs at 30%\n"); //сообщение о том, что передается 30% от максимального значения сигнала
-  
-  voltage(225); //передача 30% от максимального сигнала
-  
-  return ;
+Serial.print("Attention, possibly disabled signal");
+
+
+Serial.println("The heater runs at 30%\n"); //сообщение о том, что передается 30% от максимального значения сигнала
+
+voltage(225); //передача 30% от максимального сигнала
+
+return ;
 }
 
 
@@ -188,52 +189,45 @@ void error(){ //функция обработки ошибок
 
 int getSmoothedValue(){
 
-    int value;
-    int repeats = 10;
-    
-    for (int i=0; i<repeats; i++){ // измеряем значение несколько раз
-      value += analogRead(acs712_pin); // суммируем измеренные значения
-      delay(1);
-    }
-    
-    value /= repeats; // и берём среднее арифметическое
-    return value;
+int value;
+int repeats = 10;
+
+for (int i=0; i<repeats; i++){ // измеряем значение несколько раз
+value += analogRead(acs712_pin); // суммируем измеренные значения
+delay(1);
+}
+
+value /= repeats; // и берём среднее арифметическое
+return value;
 }
 
 
 
 
-void Amper() 
-{
+void Amper() {
 
   int sensorValue = getSmoothedValue(); // читаем значение с АЦП и выводим в монитор
   Serial.print('I');
-  Serial.print(" = ");
-  int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
-  Serial.print(c);
-  Serial.println(" mA");
-    
-  delay(100);
-
+Serial.print(" = ");
+int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
+Serial.print(c);
+Serial.println(" mA");
+delay(100);
 }
-
-
 
 // рассчитывает ток в мА по значению с АЦП
 int getCurrent(int adc) {
-
-  int delta = zero - adc; // отклонение от нуля шкалы
-  float scale = 37.888; // сколько единиц АЦП приходится на 1 ампер
-  int current = (int)delta*1000/scale; // считаем ток в мА
-  return current;
-
+int delta = -zero + adc; // отклонение от нуля шкалы
+float scale = 37.888888; // сколько единиц АЦП приходится на 1 ампер, по формуле (1)
+int current = (int)delta*1000*2/scale; // считаем ток в мА и округляем до целых, по формуле (2)
+return current;
 }
 
 
 
 float Voltage()
 {
-  int analogInput, value;
+ int analogInput, value;
   float vout, vin, R1, R2;
 
   for(analogInput=12; analogInput !=15; analogInput++ )

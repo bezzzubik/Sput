@@ -24,7 +24,7 @@ void cam()
 {
  
    if (VT == false)
-   if((millis - Time >= maxTime) || (VolAk < 10) )
+   if((millis() - Time >= maxTime) || (VolAk < 10) )
    {
       bool VT=true;
       digitalWrite(CAMERA_ON_OFF, LOW);
