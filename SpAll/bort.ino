@@ -82,7 +82,7 @@ int Temp()
     
     celsius = (int)raw / 16;
 
-    if (j==1)
+    if (j==2)
       celA=celsius;
     
     Serial.print('T');
