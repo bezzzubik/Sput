@@ -41,7 +41,7 @@ int Temp()
   byte i;
   byte j=1;
   byte present = 0;
-  byte type_s=0;
+  byte type_s;
   byte data[12];
   byte addr[8];
   int celsius;
@@ -54,6 +54,14 @@ int Temp()
       return celA;
     }
   
+switch (addr[0]) {
+    case 0x10:
+    type_s = 1;
+      break;
+    default:
+      type_s = 0;
+  } 
+
   
     ds.reset();
     ds.select(addr);
@@ -71,15 +79,21 @@ int Temp()
     OneWire::crc8(data, 8);
     
     int16_t raw = (data[1] << 8) | data[0];
-    
-    
-    byte cfg = (data[4] & 0x60);
-    
-    if (cfg == 0x00) raw = raw & ~7;
-    else if (cfg == 0x20) raw = raw & ~3;
-    else if (cfg == 0x40) raw = raw & ~1;
-    
-    
+    if (type_s) {
+      raw = raw << 3;
+      if (data[7] == 0x10) {
+
+        raw = (raw & 0xFFF0) + 12 - data[6];
+      }
+    } else {
+      byte cfg = (data[4] & 0x60);
+
+      if (cfg == 0x00) raw = raw & ~7;  
+      else if (cfg == 0x20) raw = raw & ~3;
+      else if (cfg == 0x40) raw = raw & ~1;
+      
+    }
+      
     celsius = (int)raw / 16;
 
     if (j==2)
