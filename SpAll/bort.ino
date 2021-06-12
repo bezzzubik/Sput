@@ -73,7 +73,7 @@ int Temp()
   ds.select(addr);
   ds.write(0x44, 1);        // start conversion, with parasite power on at the end
   
-  delay(750);     // maybe 750ms is enough, maybe not
+  delay(350);     // maybe 750ms is enough, maybe not
   // we might do a ds.depower() here, but the reset will take care of it.
   
   present = ds.reset();
