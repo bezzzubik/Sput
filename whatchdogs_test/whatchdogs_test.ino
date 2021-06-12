@@ -4,7 +4,6 @@ void setup() {
   wdt_disable(); // бесполезная строка до которой не доходит выполнение при bootloop
   Serial.begin(9600);
   Serial.println("Setup..");
-  
   Serial.println("Wait 5 sec..");
   delay(5000); // Задержка, чтобы было время перепрошить устройство в случае bootloop
   wdt_enable (WDTO_8S); // Для тестов не рекомендуется устанавливать значение менее 8 сек.
@@ -20,8 +19,8 @@ void loop(){
   if(!(millis()%1000)){
     timer++;
     Serial.println(timer);
-    digitalWrite(35, digitalRead(35)!=0 ? LOW:HIGH); delay(1);
+    digitalWrite(35, digitalRead(35)==1 ? 0:1); delay(1);
   }
-  wdt_reset();
+//  wdt_reset();
 //  return;
 }
