@@ -6,8 +6,8 @@ void setup() {
   Serial.println("Setup..");
   
   Serial.println("Wait 5 sec..");
-  delay(10000); // Задержка, чтобы было время перепрошить устройство в случае bootloop
-  wdt_enable (WDTO_8S); // Для тестов не рекомендуется устанавливать значение менее 8 сек.
+  delay(5000); // Задержка, чтобы было время перепрошить устройство в случае bootloop
+  wdt_enable (WDTO_4S); // Для тестов не рекомендуется устанавливать значение менее 8 сек.
   Serial.println("Watchdog enabled.");
 }
 
@@ -18,7 +18,7 @@ void loop(){
   if(!(millis()%1000)){
     timer++;
     Serial.println(timer);
-    digitalWrite(13, digitalRead(13)==1?0:1); delay(1);
+    digitalWrite(35, digitalRead(35)!=0 ? LOW:HIGH); delay(1);
   }
 //  wdt_reset();
 }
