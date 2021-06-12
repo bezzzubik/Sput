@@ -15,6 +15,7 @@ int timer = 0;
 
 void loop(){
   // Каждую секунду мигаем светодиодом и значение счетчика пишем в Serial
+  timer = 0;
   while(timer < 7)
   if(!(millis()%1000)){
     timer++;
@@ -22,4 +23,5 @@ void loop(){
     digitalWrite(35, digitalRead(35)!=0 ? LOW:HIGH); delay(1);
   }
   wdt_reset();
+//  return;
 }
