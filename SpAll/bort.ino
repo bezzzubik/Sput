@@ -106,7 +106,7 @@ int Temp()
 
     celsius = (int)raw / 16;
 
-    if (j==2)
+    if (j==3)
       celA=celsius;
     
     Serial.print('T');

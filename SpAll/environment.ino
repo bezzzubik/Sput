@@ -18,7 +18,7 @@ ClimateGuard_RadSens1v2 radSens(RS_DEFAULT_I2C_ADDRESS); /*Constructor of the cl
 void setupEnv()
 {
 
-  Serial.begin(115200);  
+  Serial.begin(9600);  
   setupDos();
   setupDHT_Gas();
 
