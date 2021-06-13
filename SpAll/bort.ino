@@ -158,14 +158,18 @@ normal(temp); //режим работы программы
 
 void voltage(int out) //функция передачи сигнала на затвор транзистора
 {
-if (out != 0){
+if (out == 0){
+  digitalWrite(37, LOW);
+  digitalWrite(11, LOW);  
+  Serial.println("Нагрев выкл");
+}else if(out > 1000){
   digitalWrite(11, HIGH);
   digitalWrite(37, HIGH);
   Serial.println("Нагрев вкл");
 }else{
-  digitalWrite(37, LOW);
-  digitalWrite(11, LOW);  
-  Serial.println("Нагрев выкл");
+  digitalWrite(11, out);
+  digitalWrite(37, out);
+  Serial.println("Нагрев вкл");
 }
 return ;
 }
@@ -177,11 +181,13 @@ return ;
 void normal(int temp)
 {
 
+int output=KOF*(TEMPNORM - temp);
+
 if( temp < TEMPNORM )
 
-  voltage(1); //передастся 0
+  voltage(output);
   
-if ( temp > TEMPNORM + 5 )
+else
 
   voltage(0);
 
