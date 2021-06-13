@@ -19,7 +19,7 @@ void setupBort()
 //  pinMode(8, OUTPUT);
 //  pinMode(9, OUTPUT);
   pinMode(37, OUTPUT);
-
+  pinMode(11, OUTPUT);
   
 }
 
