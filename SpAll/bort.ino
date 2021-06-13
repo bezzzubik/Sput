@@ -160,11 +160,13 @@ void voltage(int out) //функция передачи сигнала на за
 {
 digitalWrite(11, out);
 
-if (out != 0)
+if (out != 0){
 digitalWrite(37, HIGH);
-else
+Serial.println("Нагрев вкл");
+}else{
 digitalWrite(37, LOW);
-
+Serial.println("Нагрев выкл");
+}
 return ;
 }
 
