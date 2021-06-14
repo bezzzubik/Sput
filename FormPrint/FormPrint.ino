@@ -39,7 +39,7 @@ void loop() {
 
   PrintIn(1000000, 6); //Давление
 
-  PrintFl(12.55, 8, 2);
+ PrintFl(12.55, 8, 2);
   PrintFl(12.55, 8, 2);
 
   PrintFl(3.00, 6, 2);
@@ -63,7 +63,7 @@ void loop() {
 void PrintIn(int t, int i)
 {
 
-  char buf[7];
+  char buf[32];
   sprintf(buf, "%*d ", i, t);
   Serial.print(buf);
   
@@ -73,7 +73,7 @@ void PrintIn(int t, int i)
 void PrintFl(float f, int i, int p)
 {
   
-  char buf[7];  
+  char buf[32];  
   sprintf(buf, "%*.*f ", i, p, f);
   Serial.print(buf);
   
@@ -96,6 +96,6 @@ void PrintForm()
 
   Serial.print(F(" T1   T2   T3   T4   T5  HEA   I    V1    V2    V3  "));
 //  Serial.print(F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum"));
-  Serial.print(F(" Ax   Ay   Az   Aa    Gx     Gy     Gz     Ga    Fx   Fy   Fz   Fa    P       abA     reA     RadD   RadS  NumP gaz   T     Hum "));
+  Serial.println(F(" Ax   Ay   Az   Aa    Gx     Gy     Gz     Ga    Fx   Fy   Fz   Fa    P       abA     reA     RadD   RadS  NumP gaz   T     Hum "));
 
 }
