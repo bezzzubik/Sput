@@ -54,7 +54,8 @@ void loop() {
 
   PrintFl(27.40, 5, 2);
 
-
+  Serial.println();
+  
   delay(1000);
   
 }
