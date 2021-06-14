@@ -64,7 +64,6 @@ void setupGeo() {
   StartComp();
 
   // Check settings
-  checkSettings();
 }
 
 
@@ -83,13 +82,6 @@ void StartComp()
   
 }
 
-
-
-void checkSettings()
-{
-Serial.print("Oversampling: ");
-Serial.println(ms5611.getOversampling());
-}
 
 
 
