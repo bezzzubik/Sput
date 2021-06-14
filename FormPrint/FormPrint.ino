@@ -53,6 +53,9 @@ void loop() {
   PrintFl(27.40, 6, 2);
 
   PrintFl(27.40, 5, 2);
+
+
+  delay(1000);
   
 }
 
