@@ -1,3 +1,5 @@
+#include "stdio.h"
+
 void setup() {
 
   Serial.begin(9600);
@@ -60,23 +62,67 @@ void loop() {
   
 }
 
-void PrintIn(int t, int i)
-{
-
-  char buf[32];
-  sprintf(buf, "%*d ", i, t);
-  Serial.print(buf);
-  
+void PrintIn(int a, int k)
+{ 
+  int len, j;
+  char c[32];
+  itoa(a, c, 10);
+  len=strlen(c);
+  j=0;
+  if(a<0)
+  {
+    j++;
+    c[0]='-';
+  }
+  a=abs(a);
+  len--;
+  c[k]='\0';
+  k--;
+  for(; len < k; k--)
+    c[k]=' ';
+  for(; len>=j; len--)
+  {
+     c[len]=(a%10)+48;
+    a=a/10;
+  }
+  Serial.print(c);
 }
 
 
-void PrintFl(float f, int i, int p)
-{
-  
-  char buf[32];  
-  sprintf(buf, "%*.*f ", i, p, f);
-  Serial.print(buf);
-  
+void PrintFl(float f, int k, int l)
+{ 
+  int len, j, a;
+  char c[32];
+  a=(int)f;
+  itoa(a, c, 10);
+  len=strlen(c)+l;
+  j=0;
+  if(a<0)
+  {
+    j++;
+    c[0]='-';
+  }
+  a=abs(a);
+  c[k]='\0';
+  k--;
+  for(; len < k; k--)
+    c[k]=' ';
+  for(int n=l; n != 0; n--)
+    f=f*10;
+  a=(int)f;
+  for(; l!=0; l--, len--)
+  {
+    c[len]=a%10+48;
+    a=a/10;
+  }
+  c[len]='.';
+  len--;
+  for(; len>=j; len--)
+  {
+     c[len]=(a%10)+48;
+    a=a/10;
+  }
+  Serial.print(c);
 }
 
 
