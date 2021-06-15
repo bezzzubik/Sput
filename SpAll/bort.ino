@@ -109,15 +109,7 @@ int Temp()
     if (j==3)
       celA=celsius;
     
-    Serial.print('T');
-    
-    Serial.print(j);
-    
-    Serial.print('=');
-    
-    Serial.print(celsius);
-    
-    Serial.println('C');
+    PrintIn(celsius, 4);
     
     j++;
   
@@ -160,17 +152,15 @@ void voltage(int out) //функция передачи сигнала на за
 {
 if (out == 0){
   digitalWrite(37, LOW);
-  digitalWrite(11, LOW);  
-  Serial.println("Нагрев выкл");
+  digitalWrite(11, LOW);
 }else if(out > 1000){
   digitalWrite(11, HIGH);
   digitalWrite(37, HIGH);
-  Serial.println("Нагрев вкл");
 }else{
   digitalWrite(11, out);
   digitalWrite(37, out);
-  Serial.println("Нагрев вкл");
 }
+  PrintHeat(out);
 return ;
 }
 
@@ -235,12 +225,9 @@ return value;
 void Amper() {
 
   int sensorValue = analogRead(acs712_pin); // читаем значение с АЦП и выводим в монитор
-  Serial.print('I');
-Serial.print(" = ");
-int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
-Serial.print(c);
-Serial.println(" mA");
-delay(100);
+  int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
+  PrintIn(c, 4);
+  delay(100);
 }
 
 // рассчитывает ток в мА по значению с АЦП
@@ -281,10 +268,7 @@ float Voltage()
       vin=0.0;// обнуляем нежелательное значение
     }
     
-    Serial.print("INPUT V");
-    Serial.print(analogInput);
-    Serial.print('=');
-    Serial.println(vin);
+    PrintFl(vin, 5, 2);
     delay(500);
   }
 

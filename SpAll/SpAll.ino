@@ -5,6 +5,7 @@ void setup() {
 //  pinMode(11, OUTPUT);
   wdt_disable();
   Serial.begin(9600);
+  PrintForm();
   setupBort();
   setupGeo();
   setupEnv();
@@ -15,13 +16,11 @@ void setup() {
 
 
 void loop() {
-   Serial.println("Bort:");
+
    bort();
-   Serial.println("\nGeo:");
    geo();
-   Serial.println("Inv:");
    env();
    cam();
-   Serial.println("\n\nend cycle\n");
+   Serial.println();
    wdt_reset();
 }

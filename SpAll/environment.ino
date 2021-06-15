@@ -79,17 +79,10 @@ void setupDos()
 
 
 void Dos(){
-  Serial.print("Rad intensy dyanmic: ");
 
-  Serial.println(radSens.getRadIntensyDyanmic());
-
-  Serial.print("Rad intensy static: ");
-  
-  Serial.println(radSens.getRadIntensyStatic());
-
-  Serial.print("Number of pulses: ");
-
-  Serial.println(radSens.getNumberOfPulses());
+  PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
+  PrintFl(radSens.getRadIntensyStatic(), 6, 2);
+  PrintIn(radSens.getNumberOfPulses(), 4);
 
 }
 
@@ -120,32 +113,23 @@ void setupDHT_Gas() {
 void DHT_Gas() {
 
   delay(delayMS);
-  float gaz;
+  int gaz;
   int sensorValueGaz = analogRead(A3);
-  gaz=(float)sensorValueGaz/1024*5.0;
-  Serial.print("газ=");
-  Serial.println(gaz*100,0);
-  
+  gaz=100*(sensorValueGaz/1024*5);
+  PrintIn(gaz, 3);
 
   sensors_event_t event;
   dht.temperature().getEvent(&event);
   
-  if (isnan(event.temperature)) {
-   Serial.println(F("Error reading temperature!"));
-  }
-  else {
-    Serial.print(F("Temperature: "));
-    Serial.print(event.temperature);
-    Serial.println(F("°C"));
-  }
+  if (isnan(event.temperature))
+   Serial.print(F("Err    "));
+  else 
+    PrintFl(event.temperature, 6, 2);
   
   dht.humidity().getEvent(&event);
-  if (isnan(event.relative_humidity)) {
-    Serial.println(F("Error reading humidity!"));
-  }
-  else {
-    Serial.print(F("Humidity: "));
-    Serial.print(event.relative_humidity);
-    Serial.println(F("%"));
-  }
+  if (isnan(event.relative_humidity))
+    Serial.print(F("Err   "));
+  else 
+    PrintFl(event.relative_humidity, 5, 2);
+    
 }

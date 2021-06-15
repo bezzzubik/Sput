@@ -125,14 +125,11 @@ void Compas()
     z |= Wire.read();
 
     int Abs=(int)sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
-    Serial.print("X = ");  
-    Serial.println(x, DEC); 
-    Serial.print("Y = ");  
-    Serial.println(y, DEC); 
-    Serial.print("Z = ");  
-    Serial.println(z, DEC);
-    Serial.print("Abs field=");
-    Serial.println(Abs);
+
+    PrintIn(x, 4);
+    PrintIn(y, 4);
+    PrintIn(z, 4);
+    PrintIn(Abs, 4);
   }
   
 }
@@ -149,16 +146,11 @@ void Pres()
   // Calculate altitude
   float absoluteAltitude = ms5611.getAltitude(realPressure);
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
-  
-  Serial.print("Pressure = ");
-  Serial.print(realPressure);
-  Serial.println(" Pa");
-  
-  Serial.print("absoluteAltitude = ");
-  Serial.print(absoluteAltitude);
-  Serial.print(" m\nrelativeAltitude = ");
-  Serial.print(relativeAltitude);
-  Serial.println(" m");
+
+  PrintIn(realPressure, 6);
+
+  PrintFl(absoluteAltitude, 8, 2);
+  PrintFl(relativeAltitude, 8, 2);
 
 
 }
@@ -174,61 +166,18 @@ void Axel()
   display.clearDisplay();
   display.setCursor(0, 0);
   
-  Serial.print("Accelerometer ");
-  Serial.print("X: ");
-  Serial.print(a.acceleration.x, 1);
-  Serial.print(" m/s^2, ");
-  Serial.print("Y: ");
-  Serial.print(a.acceleration.y, 1);
-  Serial.print(" m/s^2, ");
-  Serial.print("Z: ");
-  Serial.print(a.acceleration.z, 1);
-  Serial.println(" m/s^2");
-  Serial.print("All acceleration: ");
-  Serial.print(all, 1);
-  Serial.println(" m/s^2");
+  PrintFl(a.acceleration.x, 4, 1);
+  PrintFl(a.acceleration.y, 4, 1);
+  PrintFl(a.acceleration.z, 4, 1);
+  PrintFl(all, 4, 1);
   
-  display.println("Accelerometer - m/s^2");
-  display.print(a.acceleration.x, 1);
-  display.print(", ");
-  display.print(a.acceleration.y, 1);
-  display.print(", ");
-  display.print(a.acceleration.z, 1);
-  display.print(", all:");
-  display.print(all, 1);
-  display.println("");
-  
-  display.println("");
 
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
-  Serial.print("Gyroscope ");
-  Serial.print("X: ");
-  Serial.print(g.gyro.x, 1);
-  Serial.print(" rps, ");
-  Serial.print("Y: ");
-  Serial.print(g.gyro.y, 1);
-  Serial.print(" rps, ");
-  Serial.print("Z: ");
-  Serial.print(g.gyro.z, 1);
-  Serial.println(" rps");
-  Serial.print("All gyro: ");
-  Serial.print(all, 1);
-  Serial.println(" rps");
 
-  
-  display.println("Gyroscope - rps");
-  display.print(g.gyro.x, 1);
-  display.print(", ");
-  display.print(g.gyro.y, 1);
-  display.print(", ");
-  display.print(g.gyro.z, 1);
-  display.print("all: ");
-  display.print(all, 1);
-  display.println("");
-
-  display.println("");
-  
-  display.display();
+  PrintFl(g.gyro.x, 6, 1);
+  PrintFl(g.gyro.y, 6, 1);
+  PrintFl(g.gyro.z, 6, 1);
+  PrintFl(all, 6, 1);
   
 }
 
