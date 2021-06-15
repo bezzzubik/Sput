@@ -7,7 +7,7 @@
 
 int zero = 506; // уровень нуля, относительно которого измеряется ток, обычно VCC/2
 float VolAk;
-
+int Nap=255;
 
 OneWire ds(10);
 
@@ -26,9 +26,12 @@ void setupBort()
 void bort()
 {
 
-heater( Temp() );
-Amper();
-VolAk=Voltage();
+  heater( checkBlock(1)?Temp():Nap);
+   
+  if(checkBlock(2))
+    Amper();
+  if (checkBlock(3))
+    VolAk=Voltage();
   delay(100);
 }
 
@@ -118,7 +121,7 @@ int Temp()
   ds.reset_search();
   
   delay(250);
-  
+  EndB(1);
   return celA;
 
 }
@@ -227,6 +230,7 @@ void Amper() {
   int sensorValue = analogRead(acs712_pin); // читаем значение с АЦП и выводим в монитор
   int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
   PrintIn(c, 4);
+  EndB(2);
   delay(100);
 }
 
@@ -271,6 +275,6 @@ float Voltage()
     PrintFl(vin, 5, 2);
     delay(500);
   }
-
+  EndB(3);
   return vin;
 }

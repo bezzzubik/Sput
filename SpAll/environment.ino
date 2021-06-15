@@ -17,8 +17,11 @@ ClimateGuard_RadSens1v2 radSens(RS_DEFAULT_I2C_ADDRESS); /*Constructor of the cl
 
 void setupEnv()
 {
-  setupDos();
-  setupDHT_Gas();
+
+  if(checkBlock(8))
+    setupDos();
+  if(checkBlock(9))
+    setupDHT_Gas();
 
 }
 
@@ -26,10 +29,12 @@ void setupEnv()
 void env()
 {
 
-  Dos();
-  delay(100);
-  DHT_Gas();
-  delay(100);
+  if(checkBlock(8))
+    Dos();
+  delay(50);
+  if(checkBlock(9))
+    DHT_Gas();
+  delay(50);
 
 }
 
@@ -83,7 +88,7 @@ void Dos(){
   PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
   PrintFl(radSens.getRadIntensyStatic(), 6, 2);
   PrintIn(radSens.getNumberOfPulses(), 4);
-
+  EndB(8);
 }
 
 
@@ -131,5 +136,5 @@ void DHT_Gas() {
     Serial.print(F("Err   "));
   else 
     PrintFl(event.relative_humidity, 5, 2);
-    
+  EndB(9);
 }

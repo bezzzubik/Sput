@@ -87,11 +87,14 @@ void StartComp()
 
 void geo() {
 
-  GPS();
-  
-  Axel();
-  Compas();
-  Pres();
+  if(checkBlock(4))
+    GPS();
+  if(checkBlock(5))
+     Axel();
+  if(checkBlock(6))
+    Compas();
+  if(checkBlock(7))
+    Pres();
   delay(300);
 }
 
@@ -128,6 +131,7 @@ void Compas()
     PrintIn(Abs, 4);
   }
   
+  EndB(6);
 }
 
 
@@ -148,7 +152,8 @@ void Pres()
   PrintFl(absoluteAltitude, 8, 2);
   PrintFl(relativeAltitude, 8, 2);
 
-
+  EndB(7);
+  
 }
 
 
@@ -174,7 +179,8 @@ void Axel()
   PrintFl(g.gyro.y, 6, 1);
   PrintFl(g.gyro.z, 6, 1);
   PrintFl(all, 6, 1);
-  
+
+  EndB(5);
 }
 
 
@@ -247,12 +253,12 @@ void GPS()
   printInt(gps.charsProcessed(), true, 6);
   printInt(gps.sentencesWithFix(), true, 10);
   printInt(gps.failedChecksum(), true, 9);
-  Serial.println();
   
   smartDelay(1000);
  
   if (millis() > 5000 && gps.charsProcessed() < 10)
     Serial.println(F("No GPS data received: check wiring"));
+  EndB(4);
 }
  
 
