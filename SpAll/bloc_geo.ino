@@ -90,12 +90,8 @@ void geo() {
   GPS();
   
   Axel();
-  Serial.println("\n");
   Compas();
-  Serial.println("\n");
   Pres();
-  Serial.println("\n\n");
-
   delay(300);
 }
 
@@ -186,11 +182,6 @@ void Axel()
 
 void GPS()
 {
-
-   Serial.println(F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum"));
-   Serial.println(F("           (deg)      (deg)       Age                      Age  (m)    --- from GPS ----  ---- to London  ----  RX    RX        Fail"));
-   Serial.println(F("----------------------------------------------------------------------------------------------------------------------------------------"));
-  
   static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
 
   printInt(gps.satellites.value(), gps.satellites.isValid(), 5);
