@@ -17,7 +17,7 @@ void loop() {
 
   PrintHeat(2);  //вкл\выкл
 
-  PrintIn(759, 3); //сила тока
+  PrintIn(759, 4); //сила тока
 
   PrintFl(3.05, 5, 2); //Напряжение
   PrintFl(12.52, 5, 2); //Напряжение
@@ -41,16 +41,16 @@ void loop() {
 
   PrintIn(1000000, 6); //Давление
 
- PrintFl(12.55, 8, 2);
+  PrintFl(12.55, 8, 2);
   PrintFl(12.55, 8, 2);
 
   PrintFl(3.00, 6, 2);
   PrintFl(3.00, 6, 2);
 
 
-  PrintIn(4, 3);
+  PrintIn(4, 4);
 
-  PrintIn(13, 2);
+  PrintIn(13, 3);
 
   PrintFl(27.40, 6, 2);
 
@@ -86,6 +86,7 @@ void PrintIn(int a, int k)
     a=a/10;
   }
   Serial.print(c);
+  Serial.print(' ');
 }
 
 
@@ -102,7 +103,6 @@ void PrintFl(float f, int k, int l)
     j++;
     c[0]='-';
   }
-  a=abs(a);
   c[k]='\0';
   k--;
   for(; len < k; k--)
@@ -110,6 +110,7 @@ void PrintFl(float f, int k, int l)
   for(int n=l; n != 0; n--)
     f=f*10;
   a=(int)f;
+  a=abs(a);
   for(; l!=0; l--, len--)
   {
     c[len]=a%10+48;
@@ -123,6 +124,7 @@ void PrintFl(float f, int k, int l)
     a=a/10;
   }
   Serial.print(c);
+  Serial.print(' ');
 }
 
 
