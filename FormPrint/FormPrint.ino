@@ -142,7 +142,7 @@ void PrintHeat(int i)
 void PrintForm()
 {
 
-  Serial.print(F(" T1   T2   T3   T4   T5  HEA   I    V1    V2    V3  "));
+  Serial.print(F("T1    T2   T3   T4   T5  HEA   I    V1    V2    V3  "));
 //  Serial.print(F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum"));
   Serial.println(F(" Ax   Ay   Az   Aa    Gx     Gy     Gz     Ga    Fx   Fy   Fz   Fa    P       abA     reA     RadD   RadS  NumP gaz   T     Hum "));
 
