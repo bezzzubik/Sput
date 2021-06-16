@@ -24,6 +24,7 @@ void PrintIn(int a, int k)
   }
   Serial.print(c);
   Serial.print(' ');
+  Serial1.println(c);
 }
 
 

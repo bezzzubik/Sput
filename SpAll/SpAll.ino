@@ -28,9 +28,13 @@ void loop() {
 
    bort();
    geo();
+   
+   wdt_reset();
+   
    env();
    cam();
-   Serial.println();
    wdt_reset();
+   Serial1.println("endC");
+   Serial.println();
    Zer();
 }

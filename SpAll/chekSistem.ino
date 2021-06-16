@@ -14,8 +14,11 @@ void checkStart()
       a=0;
       for(i=0;(i<COUNTBLOK) && (a==0); i++)
           if(eeprom_read_byte(i) == 0)
-            a=i+1;
-      eeprom_update_byte(a-1, 2);
+            a=i;
+      eeprom_update_byte(a, 2);
+      Serial.print("System");
+      Serial.print(a);
+      Serial.print("off");
   }
 }
 

@@ -86,6 +86,8 @@ void setupDos()
 void Dos(){
 
   PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
+  Serial1.print("RI=");
+  Serial1.println(radSens.getRadIntensyDyanmic());
   PrintFl(radSens.getRadIntensyStatic(), 6, 2);
   PrintIn(radSens.getNumberOfPulses(), 4);
   EndB(8);

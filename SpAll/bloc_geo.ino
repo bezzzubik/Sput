@@ -129,6 +129,8 @@ void Compas()
     PrintIn(y, 4);
     PrintIn(z, 4);
     PrintIn(Abs, 4);
+    Serial1.print("CA=");
+    Serial1.println(Abs);
   }
   
   EndB(6);
@@ -148,8 +150,11 @@ void Pres()
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
 
   PrintIn(realPressure, 6);
-
+  Serial1.print("P=");
+  Serial1.println(realPressure);
   PrintFl(absoluteAltitude, 8, 2);
+  Serial1.print("h=");
+  Serial1.println(absoluteAltitude);
   PrintFl(relativeAltitude, 8, 2);
 
   EndB(7);
@@ -171,7 +176,8 @@ void Axel()
   PrintFl(a.acceleration.y, 4, 1);
   PrintFl(a.acceleration.z, 4, 1);
   PrintFl(all, 4, 1);
-  
+  Serial1.print("g=");
+  Serial1.println(all);
 
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
 
@@ -179,7 +185,9 @@ void Axel()
   PrintFl(g.gyro.y, 6, 1);
   PrintFl(g.gyro.z, 6, 1);
   PrintFl(all, 6, 1);
-
+  Serial1.print("gir=");
+  Serial1.println(all);
+  
   EndB(5);
 }
 
@@ -194,6 +202,10 @@ void GPS()
   printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
   printFloat(gps.location.lat(), gps.location.isValid(), 11, 6);
   printFloat(gps.location.lng(), gps.location.isValid(), 12, 6);
+  Serial1.print("lat ");
+  printFloat1(gps.location.lat(), gps.location.isValid(), 11, 6);
+  Serial1.print("lng ");
+  printFloat1(gps.location.lng(), gps.location.isValid(), 12, 6);
   printInt(gps.location.age(), gps.location.isValid(), 5);
   
   TinyGPSTime t=gps.time;
@@ -208,6 +220,7 @@ void GPS()
     char sz[32];
     sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
     Serial.print(sz);
+    Serial1.println(sz);
   }
   
   if (!t.isValid())
@@ -219,6 +232,7 @@ void GPS()
     char sz[32];
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
     Serial.print(sz);
+    Serial1.println(sz);
   }
  
   printInt(d.age(), d.isValid(), 5);
@@ -296,6 +310,21 @@ static void printFloat(float val, bool valid, int len, int prec)
   smartDelay(0);
 }
  
+
+static void printFloat1(float val, bool valid, int len, int prec)
+{
+  if (!valid)
+  {
+    while (len-- > 1)
+      Serial1.print('*');
+    Serial1.println();
+  }
+  else
+  {
+    Serial1.println(val, prec);
+  }
+  smartDelay(0);
+}
 
 
 
