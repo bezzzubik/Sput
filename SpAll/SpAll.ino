@@ -8,7 +8,10 @@ void setup() {
   Serial.begin(9600);
 
   checkStart();
+  delay(100);
   
+  wdt_enable (WDTO_8S);
+
   PrintForm();
 
   setupBort();
@@ -19,13 +22,12 @@ void setup() {
 
   EndB(0);
   delay(100);
-  wdt_enable (WDTO_8S);
-
 }
 
 
 void loop() {
 
+   wdt_reset();
    bort();
    geo();
    
@@ -33,8 +35,7 @@ void loop() {
    
    env();
    cam();
-   wdt_reset();
-   Serial1.println("endC");
+   Serial1.println();
    Serial.println();
    Zer();
 }
