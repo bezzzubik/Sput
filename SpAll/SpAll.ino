@@ -7,7 +7,7 @@ void setup() {
   wdt_disable();
   Serial.begin(9600);
 
-  checkStart();
+  //checkStart();
   delay(100);
   
   wdt_enable (WDTO_8S);

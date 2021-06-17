@@ -87,7 +87,8 @@ void Dos(){
 
   PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
   Serial1.print("RI=");
-  Serial1.println(radSens.getRadIntensyDyanmic());
+  Serial1.print(radSens.getRadIntensyDyanmic());
+  Serial1.print(' ');
   PrintFl(radSens.getRadIntensyStatic(), 6, 2);
   PrintIn(radSens.getNumberOfPulses(), 4);
   EndB(8);
@@ -121,8 +122,8 @@ void DHT_Gas() {
 
   delay(delayMS);
   int gaz;
-  int sensorValueGaz = analogRead(A3);
-  gaz=100*(sensorValueGaz/1024*5);
+  float sensorValueGaz = analogRead(A3);
+  gaz=(int)(100*(sensorValueGaz/1024*5.00));
   PrintIn(gaz, 3);
 
   sensors_event_t event;

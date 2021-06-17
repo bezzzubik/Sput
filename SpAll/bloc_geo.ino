@@ -50,14 +50,14 @@ void setupGeo() {
 
 
   // Initialize MS5611 sensor
-  Serial.println("Initialize MS5611 Sensor");
+//  Serial.println("Initialize MS5611 Sensor");
   
-  while(!ms5611.begin())
+/*  while(!ms5611.begin())
   {
   Serial.println("Could not find a valid MS5611 sensor, check wiring!");
   delay(500);
   }
-  
+  */
   // Get reference pressure for relative altitude
   referencePressure = ms5611.readPressure();
 
@@ -130,7 +130,8 @@ void Compas()
     PrintIn(z, 4);
     PrintIn(Abs, 4);
     Serial1.print("CA=");
-    Serial1.println(Abs);
+    Serial1.print(Abs);
+    Serial1.print(' ');
   }
   
   EndB(6);
@@ -151,10 +152,9 @@ void Pres()
 
   PrintIn(realPressure, 6);
   Serial1.print("P=");
-  Serial1.println(realPressure);
+  Serial1.print(realPressure);
+  Serial1.print(' ');
   PrintFl(absoluteAltitude, 8, 2);
-  Serial1.print("h=");
-  Serial1.println(absoluteAltitude);
   PrintFl(relativeAltitude, 8, 2);
 
   EndB(7);
@@ -177,8 +177,8 @@ void Axel()
   PrintFl(a.acceleration.z, 4, 1);
   PrintFl(all, 4, 1);
   Serial1.print("g=");
-  Serial1.println(all);
-
+  Serial1.print(all);
+  Serial1.print(' ');
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
 
   PrintFl(g.gyro.x, 6, 1);
@@ -186,8 +186,8 @@ void Axel()
   PrintFl(g.gyro.z, 6, 1);
   PrintFl(all, 6, 1);
   Serial1.print("gir=");
-  Serial1.println(all);
-  
+  Serial1.print(all);
+  Serial1.print(' '); 
   EndB(5);
 }
 
@@ -216,11 +216,11 @@ void GPS()
     Serial.print(F("********** "));
   }
   else
-  {
+    {
     char sz[32];
     sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
     Serial.print(sz);
-    Serial1.println(sz);
+    Serial1.print(sz);
   }
   
   if (!t.isValid())
@@ -232,7 +232,7 @@ void GPS()
     char sz[32];
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
     Serial.print(sz);
-    Serial1.println(sz);
+    Serial1.print(sz);
   }
  
   printInt(d.age(), d.isValid(), 5);
@@ -316,12 +316,14 @@ static void printFloat1(float val, bool valid, int len, int prec)
   if (!valid)
   {
     while (len-- > 1)
-      Serial1.print('*');
-    Serial1.println();
+    Serial1.print('*');
+    Serial1.print(' ');
   }
   else
   {
-    Serial1.println(val, prec);
+    Serial1.print(val, prec);
+    Serial1.print(' ');
+
   }
   smartDelay(0);
 }

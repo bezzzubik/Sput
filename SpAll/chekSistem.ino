@@ -31,7 +31,7 @@ void checkStart()
 void Zer()
 {
   for(int i=1; i<COUNTBLOK; i++)
-    if(eeprom_read_byte(i))
+    if(eeprom_read_byte(i) == 1)
       eeprom_update_byte(i, 0);
 }
 
