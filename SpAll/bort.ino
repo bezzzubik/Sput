@@ -114,7 +114,8 @@ int Temp()
     Serial1.print("T");
     Serial1.print(j);
     Serial1.print('-');
-    Serial1.println(celsius);    
+    Serial1.print(celsius);
+    Serial1.print(' ');    
     PrintIn(celsius, 4);
     
     j++;
@@ -234,7 +235,8 @@ void Amper() {
   int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
   PrintIn(c, 4);
   Serial1.print("I=");
-  Serial1.println(c);
+  Serial1.print(c);
+  Serial1.print(' ');
   EndB(2);
   delay(100);
 }
@@ -279,10 +281,11 @@ float Voltage()
     
     PrintFl(vin, 5, 2);
     Serial1.print('V');
-    Serial1.println(analogInput);
+    Serial1.print(analogInput);
     Serial1.print('=');
     Serial1.print(vin);
-    delay(500);
+    Serial1.print(' ');
+        delay(500);
   }
   EndB(3);
   return vin;

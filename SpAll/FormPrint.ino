@@ -24,7 +24,6 @@ void PrintIn(int a, int k)
   }
   Serial.print(c);
   Serial.print(' ');
-  Serial1.println(c);
 }
 
 
@@ -69,10 +68,13 @@ void PrintFl(float f, int k, int l)
 void PrintHeat(int i)
 {
 
-  if( i == 0)
+  if( i == 0){
     Serial.print("off ");
-  else
-    Serial.print(" on ");  
+    Serial1.print("off ");
+  }else{
+    Serial.print(" on ");
+    Serial1.print(" on ");  
+  }
 }
 
 
