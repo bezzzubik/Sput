@@ -18,7 +18,7 @@ void checkStart()
       eeprom_update_byte(a, 2);
       Serial.print("System");
       Serial.print(a);
-      Serial.println("off");
+      Serial.println(" is off");
       Serial1.print("System");
       Serial1.print(a);
       Serial1.println(" is off");

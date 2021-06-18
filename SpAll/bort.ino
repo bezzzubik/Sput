@@ -111,17 +111,18 @@ int Temp()
 
     if (j==3)
       celA=celsius;
-    Serial1.print("T");
-    Serial1.print(j);
-    Serial1.print('-');
-    Serial1.print(celsius);
-    Serial1.print(' ');    
+      
+    if(printLoRa())
+      printTL(celsius, j);
+      
     PrintIn(celsius, 4);
     
     j++;
-  
+    numbl++;
   }
-  
+  numbl=6;
+  if(printLoRa())
+      printTL(celsius, j);  
   ds.reset_search();
   
   delay(250);
@@ -138,16 +139,17 @@ int dError=0; //переменная обработки ошибки
 
 void heater(int temp)
 {
-
-if (temp < -60) //если функция выявления ошибок возвращает истину
-dError++; //к переменной добавляется 1, иначе она обнуляется
-else
-dError=0;
-
-if (dError > 5) //проверка ошибок:если переменная ошибок выявила
-error(); //более 5 ошибочных значений, то начинает работать
-else //функция обработки ошибки, иначе идет нормальный
-normal(temp); //режим работы программы
+  
+  numbl=7;
+  if (temp < -60) //если функция выявления ошибок возвращает истину
+    dError++; //к переменной добавляется 1, иначе она обнуляется
+  else
+  dError=0;
+  
+  if (dError > 5) //проверка ошибок:если переменная ошибок выявила
+  error(); //более 5 ошибочных значений, то начинает работать
+  else //функция обработки ошибки, иначе идет нормальный
+  normal(temp); //режим работы программы
 
 }
 
@@ -167,7 +169,11 @@ if (out == 0){
   digitalWrite(11, out);
   digitalWrite(37, out);
 }
-  PrintHeat(out);
+
+if(printLoRa())
+  printHeL(out);
+  
+PrintHeat(out);
 return ;
 }
 
@@ -233,10 +239,12 @@ void Amper() {
 
   int sensorValue = analogRead(acs712_pin); // читаем значение с АЦП и выводим в монитор
   int c = getCurrent(sensorValue); // преобразуем в значение тока и выводим в монитор
+  numbl=8;
   PrintIn(c, 4);
-  Serial1.print("I=");
-  Serial1.print(c);
-  Serial1.print(' ');
+  
+  if(printLoRa())
+      printIntL(c);
+
   EndB(2);
   delay(100);
 }
@@ -253,6 +261,7 @@ return current;
 
 float Voltage()
 {
+  numbl=9;
  int analogInput, value;
   float vout, vin, R1, R2;
 
@@ -280,11 +289,9 @@ float Voltage()
     }
     
     PrintFl(vin, 5, 2);
-    Serial1.print('V');
-    Serial1.print(analogInput);
-    Serial1.print('=');
-    Serial1.print(vin);
-    Serial1.print(' ');
+    if(printLoRa())
+      printFL2L("V", vin);
+    numbl++;
         delay(500);
   }
   EndB(3);

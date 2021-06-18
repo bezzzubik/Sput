@@ -5,6 +5,9 @@
 #include <Wire.h>
 #include <MS5611.h>
 
+#define KX 1
+#define KY 1
+#define KZ 1
 #define adr 0x1E
 #define ss Serial3 
 #define fl Serial2
@@ -143,7 +146,7 @@ void Compas()
 
 void Pres()
 {
-  
+  numbl=27;
   long realPressure = ms5611.readPressure();
   
   // Calculate altitude
@@ -151,11 +154,19 @@ void Pres()
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
 
   PrintIn(realPressure, 6);
+  if(printLoRa())
+    
+  
   Serial1.print("P=");
   Serial1.print(realPressure);
   Serial1.print(' ');
   PrintFl(absoluteAltitude, 8, 2);
   PrintFl(relativeAltitude, 8, 2);
+  if(printLoRa())
+    printFL2L("AbsH", absoluteAltitude);
+  numbl++;
+  if(printLoRa())
+    printFL2L("relH", relativeAltitude);
 
   EndB(7);
   
@@ -168,13 +179,17 @@ void Axel()
 
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-  double all=sqrt( pow(a.acceleration.x, 2) + pow(a.acceleration.y, 2) + pow(a.acceleration.z, 2) ); 
   display.clearDisplay();
   display.setCursor(0, 0);
-  
-  PrintFl(a.acceleration.x, 4, 1);
-  PrintFl(a.acceleration.y, 4, 1);
-  PrintFl(a.acceleration.z, 4, 1);
+  float x, y, z;
+  x=a.acceleration.x*KX;
+  z=a.acceleration.z*KZ;
+  y=a.acceleration.y*KY;  
+  double all=sqrt( pow(x, 2) + pow(y, 2) + pow(z, 2) ); 
+
+  PrintFl(x, 4, 1);
+  PrintFl(y, 4, 1);
+  PrintFl(z, 4, 1);
   PrintFl(all, 4, 1);
   Serial1.print("g=");
   Serial1.print(all);

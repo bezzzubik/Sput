@@ -1,6 +1,8 @@
 #include <avr/wdt.h>
 #include <avr/eeprom.h>
 
+int numbl=0;
+
 void setup() {
 
 //  pinMode(11, OUTPUT);
@@ -28,6 +30,7 @@ void setup() {
 void loop() {
 
    wdt_reset();
+   numbl=1;
    bort();
    geo();
    

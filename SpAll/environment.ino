@@ -85,12 +85,27 @@ void setupDos()
 
 void Dos(){
 
+  numbl=30;
   PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
   Serial1.print("RI=");
   Serial1.print(radSens.getRadIntensyDyanmic());
   Serial1.print(' ');
+
+  if(printLoRa())
+    printFL2L("RadDy", radSens.getRadIntensyDyanmic());
+  numbl++;
+
+  if(printLoRa())
+    printFL2L("RadSt", radSens.getRadIntensyStatic());
+  numbl++;
+
   PrintFl(radSens.getRadIntensyStatic(), 6, 2);
+
+  
   PrintIn(radSens.getNumberOfPulses(), 4);
+  
+  if(printLoRa())
+    printFL2L();
   EndB(8);
 }
 
@@ -132,8 +147,12 @@ void DHT_Gas() {
   if (isnan(event.temperature))
    Serial.print(F("Err    "));
   else 
+  {
     PrintFl(event.temperature, 6, 2);
-  
+    if(printLoRa())
+      
+  }   
+  }
   dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity))
     Serial.print(F("Err   "));
