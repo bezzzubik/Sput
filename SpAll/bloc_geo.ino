@@ -107,7 +107,7 @@ void geo() {
 
 void Compas()
 {
-  
+  numbl=23;  
   Wire.beginTransmission(adr);
   Wire.write(0x03);
   Wire.endTransmission();
@@ -129,12 +129,25 @@ void Compas()
     int Abs=(int)sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
 
     PrintIn(x, 4);
+    if(printLoRa())
+       printIntL("Com",x);
+    numbl++;
     PrintIn(y, 4);
+
+    if(printLoRa())
+       printIntL("Com",y);
+    numbl++;
+    
     PrintIn(z, 4);
+
+    if(printLoRa())
+       printIntL("Com",z);
+    numbl++;
+    
     PrintIn(Abs, 4);
-    Serial1.print("CA=");
-    Serial1.print(Abs);
-    Serial1.print(' ');
+
+    if(printLoRa())
+       printIntL("Com", Abs);
   }
   
   EndB(6);
@@ -154,12 +167,10 @@ void Pres()
   float relativeAltitude = ms5611.getAltitude(realPressure, referencePressure);
 
   PrintIn(realPressure, 6);
-  if(printLoRa())
     
-  
-  Serial1.print("P=");
-  Serial1.print(realPressure);
-  Serial1.print(' ');
+   if(printLoRa())
+      printIntL("P", realPressure);
+    numbl++;
   PrintFl(absoluteAltitude, 8, 2);
   PrintFl(relativeAltitude, 8, 2);
   if(printLoRa())
@@ -177,6 +188,7 @@ void Pres()
 void Axel()
 {
 
+  numbl=15;
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
   display.clearDisplay();
@@ -187,22 +199,48 @@ void Axel()
   y=a.acceleration.y*KY;  
   double all=sqrt( pow(x, 2) + pow(y, 2) + pow(z, 2) ); 
 
-  PrintFl(x, 4, 1);
+  PrintFl(x, 4, 1);  
+  if(printLoRa())
+    printAGL(x);
+  numbl++;
+
   PrintFl(y, 4, 1);
+  if(printLoRa())
+    printAGL(y);
+  numbl++;
+    
   PrintFl(z, 4, 1);
+  if(printLoRa())
+    printAGL(z);
+  numbl++;
+    
   PrintFl(all, 4, 1);
-  Serial1.print("g=");
-  Serial1.print(all);
-  Serial1.print(' ');
+  if(printLoRa())
+    printAGL(all);
+  numbl++;
+    
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
 
   PrintFl(g.gyro.x, 6, 1);
+  if(printLoRa())
+    printAGL(g.gyro.x);
+  numbl++;
+
   PrintFl(g.gyro.y, 6, 1);
+  if(printLoRa())
+    printAGL(g.gyro.y);
+  numbl++;
+  
   PrintFl(g.gyro.z, 6, 1);
+  if(printLoRa())
+    printAGL(g.gyro.z);
+  numbl++;
+  
   PrintFl(all, 6, 1);
-  Serial1.print("gir=");
-  Serial1.print(all);
-  Serial1.print(' '); 
+  if(printLoRa())
+    printAGL(all);
+  numbl++;
+  
   EndB(5);
 }
 

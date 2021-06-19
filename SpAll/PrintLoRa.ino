@@ -138,14 +138,7 @@ void printFL2L(char* n, float v)
     Serial1.print(numbl+3);
   }  
   else
-    Serial1.print(n)
-
-
-  case 34:
-    Serial1.print("Temp");
-
-  case 35:
-    Serial1.print("Hum");
+    Serial1.print(n);
 
   Serial1.print('=');
   Serial1.print(v,2);
@@ -155,15 +148,16 @@ void printFL2L(char* n, float v)
 
 
 
-void printAGL(float A, int i)
+void printAGL(float A)
 {
+  int i=numbl;
   if(i<19)
      Serial1.print('g');
   else{
-     Serial1.print("giro");
+     Serial1.print("gir");
      i=i-4;
   }
-  XYZprL(numbl-15);
+  XYZprL(i-15);
 
   Serial1.print('=');
   Serial1.print(A, 1);
@@ -172,30 +166,13 @@ void printAGL(float A, int i)
 
 
 
-void printIntL(long A)
+void printIntL(char* n, long A)
 {
-  switch(numbl)
-  {
-  case 8:
-    Serial1.print('I');
-    break;
-  case 23:
-  case 24:
-  case 25:
-  case 26: 
-      Serial1.print("Com");
+
+  Serial1.print(n);
+  if( numbl>=23 && numbl<=26)
       XYZprL(numbl-23);
-      break;
-  case 27:
-      Serial1.print('P');
-      break;
-  case 32:
-      Serial1.print("NumP");
-      break;
-  case 33:
-      Serial1.print("gaz");
-      break;
-  }
+      
   Serial1.print('=');
   Serial1.print(A);
   Serial1.print(' ');

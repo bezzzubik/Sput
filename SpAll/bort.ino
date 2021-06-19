@@ -122,7 +122,7 @@ int Temp()
   }
   numbl=6;
   if(printLoRa())
-      printTL(celsius, j);  
+      printCountL(j);
   ds.reset_search();
   
   delay(250);
@@ -223,7 +223,8 @@ int getSmoothedValue(){
 int value;
 int repeats = 10;
 
-for (int i=0; i<repeats; i++){ // измеряем значение несколько раз
+for (int i=0; i<repeats; i++)
+{ // измеряем значение несколько раз
 value += analogRead(acs712_pin); // суммируем измеренные значения
 delay(1);
 }
@@ -243,7 +244,7 @@ void Amper() {
   PrintIn(c, 4);
   
   if(printLoRa())
-      printIntL(c);
+      printIntL("I", c);
 
   EndB(2);
   delay(100);

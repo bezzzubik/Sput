@@ -105,7 +105,7 @@ void Dos(){
   PrintIn(radSens.getNumberOfPulses(), 4);
   
   if(printLoRa())
-    printFL2L();
+    printFL2L("NumP", radSens.getNumberOfPulses());
   EndB(8);
 }
 
@@ -135,11 +135,15 @@ void setupDHT_Gas() {
 
 void DHT_Gas() {
 
+  numbl=34;
   delay(delayMS);
   int gaz;
   float sensorValueGaz = analogRead(A3);
   gaz=(int)(100*(sensorValueGaz/1024*5.00));
   PrintIn(gaz, 3);
+  if(printLoRa())
+     printIntL("gaz", gaz);
+  numbl++;
 
   sensors_event_t event;
   dht.temperature().getEvent(&event);
@@ -150,13 +154,16 @@ void DHT_Gas() {
   {
     PrintFl(event.temperature, 6, 2);
     if(printLoRa())
-      
-  }   
+      printFL2L("T", event.temperature);   
   }
+  numbl++;
   dht.humidity().getEvent(&event);
   if (isnan(event.relative_humidity))
     Serial.print(F("Err   "));
-  else 
+  else{
     PrintFl(event.relative_humidity, 5, 2);
+    if(printLoRa())
+      printFL2L("Hum", event.relative_humidity);
+  }
   EndB(9);
 }
