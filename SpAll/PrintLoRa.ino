@@ -1,5 +1,5 @@
-int pflag1=1;
-int pflag2=1;
+int pflag1=3;
+int pflag2=0;
 
 
 
@@ -23,6 +23,7 @@ char c[10];
        c[i]=Serial1.read();
     Serial1.println(c);
   }
+
   switch (c[0])
   {
     
@@ -30,9 +31,9 @@ char c[10];
               break;
   case 'f': off_the_block(c[1]);
               break;
-  case 'p': print_zn(c[1]);
+  case 'p': print_zn(c);
               break;
-  case 'd': off_print(c[1]);
+  case 'd': off_print(c);
               break;
   default :
             Serial1.print("Com is not ...");
@@ -41,10 +42,18 @@ char c[10];
 }
 
 
-void print_zn(char d)
+void print_zn(char* c)
 {
 
-    
+  int n;
+  if(!(n=chusezn(c)))
+     Serial1.println("unknown combination"); 
+  else
+     if(n<19)
+        pflag1=pflag1|(int)ldexp(1,(numbl-1));
+     else
+        pflag2=pflag2|(int)ldexp(1,(numbl-19));
+  return;
 
 }
 
@@ -54,6 +63,167 @@ void off_print(char c)
 
   
 }
+
+int chusezn(char* c)
+{
+
+  switch(c[1])
+  {
+  case 'T': if (strlen(c) != 2)
+              return chuseT(c[2]);
+          break;
+  case 'c': return 6;
+          break;
+  case 'n': return 7;
+          break;
+  case 'I': return 8;
+          break;
+  case 'V': if(strlen(c) != 2)
+              return chuseV(c[2]);
+          break;
+  case 'l': if(strlen(c) != 2)
+              return chuseL(c[2]);
+          break;
+  case 't': return 14;
+          break;
+  case 'A': return chuseAGC(c, 15);
+          break;
+  case 'G': return chuseAGC(c, 19);
+          break;
+  case 'C': return chuseAGC(c, 23);
+          break;
+  case 'P': return 27;
+          break;
+  case 'h': if(strlen(c) != 2)
+             return chuseH(c[2]);
+          break;
+  case 'R': if(strlen(c) != 2)
+              return chuseR(c[2]);
+          break;
+  case 'N':return 32;
+          break;
+  case 'g':return 33;
+          break;
+  case 'H':return 35;
+          break;
+  }
+  return 0;
+}
+
+
+
+int chuseH(char c)
+{
+
+  if(c=='a')
+      return 28;
+  else if(c=='r')
+      return 29;
+  return 0;
+  
+}
+
+
+int chuseR(char c)
+{
+
+  if(c=='d')
+     return 30;
+  else if(c=='s')
+      return 31;
+  return 0;
+  
+}
+
+
+
+
+int chuseAGC(char* c, int p)
+{
+
+  if(strlen(c) == 3)
+  {
+     int k=chuseXYZ(c[2]);
+        if (k)
+            return p+k-1;
+        else
+             return k; 
+  }else{
+     return p+3;
+  }
+
+}
+
+
+
+int chuseXYZ(char c)
+{
+
+  switch(c)
+  {
+  case 'x': return 1;
+          break;
+  case 'y': return 2;
+          break;
+  case 'z': return 3;
+          break; 
+   }
+   return 0;
+}
+
+
+int chuseL(char c)
+{
+
+  switch(c)
+  {
+  case 'a': return 12;
+          break;
+  case 'o': return 13;
+          break;
+  }
+  return 0;
+}
+
+
+
+int chuseV(char c)
+{
+
+  switch(c)
+  {
+  case '1': return 9;
+        break;
+  case '2': return 10;
+        break;
+  case '3': return 11;
+        break; 
+  }
+  return 0;
+}
+
+
+
+
+int chuseT(char c)
+{
+
+  switch(c)
+  {
+  case '1': return 1;
+          break;
+  case '2': return 2;
+          break;
+  case '3': return 3;
+          break;
+  case '4': return 4;
+          break;
+  case '5': return 5;    
+          break;
+  }
+  return 0;
+}
+
 
 
 void off_the_block(char d)
@@ -89,12 +259,12 @@ void on_the_block(char d)
 bool printLoRa()
 {
   if(numbl<19)
-  {  if((int)pow(2,numbl-1)&pflag1)
+  {  if((int)ldexp(1,(numbl-1))&pflag1)
       return true;
     else
       return false;
   }else{
-    if((int)pow(2,numbl-19)&pflag2)
+    if((int)ldexp(1,(numbl-19))&pflag2)
       return true;
     else
       return false;
@@ -105,43 +275,37 @@ bool printLoRa()
 void printTL(int t, int j)
 {
 
-/*  Serial1.print('T');
+  Serial1.print('T');
   Serial1.print(j);
   Serial1.print('=');
   Serial1.print(t);
-*/  Serial1.println(numbl);
-Serial1.print(' ');
 
 }
 
 void printCountL(int j)
 {
-  /*
   Serial1.print("CoT=");
   Serial1.print(j);
   Serial1.print(' ');  
-  */
-  Serial1.println(numbl);
   
 }
 
 
 void printHeL(int o)
 {
-  /*Serial1.print("Heat ");
+  Serial1.print("Heat ");
   if(o)
       Serial1.print("on ");
   else
       Serial1.print("off ");
-  return;*/
-  Serial1.println(numbl);
+  return;
 }
 
 
 
 void printFL2L(char* n, float v)
 {
-/*
+
   Serial1.print(n);
   if(n[0] == 'V')
     Serial1.print(numbl+3);
@@ -149,13 +313,12 @@ void printFL2L(char* n, float v)
   Serial1.print('=');
   Serial1.print(v,2);
   Serial1.print(' ');
- */Serial1.println(numbl);
 }
 
 
 
 void printAGL(float A)
-{/*
+{
   int i=numbl;
   if(i<19)
      Serial1.print('g');
@@ -167,15 +330,13 @@ void printAGL(float A)
 
   Serial1.print('=');
   Serial1.print(A, 1);
-  Serial1.print(' ');*/
-  Serial1.println(numbl);
+  Serial1.print(' ');
 }
 
 
 
 void printIntL(char* n, long A)
 {
-/*
   Serial1.print(n);
   if( numbl>=23 && numbl<=26)
       XYZprL(numbl-23);
@@ -183,8 +344,7 @@ void printIntL(char* n, long A)
   Serial1.print('=');
   Serial1.print(A);
   Serial1.print(' ');
-*/
-  Serial1.println(numbl);
+
 }
 
 void XYZprL(int i)
