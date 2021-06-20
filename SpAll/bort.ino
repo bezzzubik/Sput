@@ -122,7 +122,8 @@ int Temp()
   }
   numbl=6;
   if(printLoRa())
-      printCountL(j);
+      printCountL(j-1);
+  
   ds.reset_search();
   
   delay(250);

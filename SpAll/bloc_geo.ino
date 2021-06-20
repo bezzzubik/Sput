@@ -210,18 +210,22 @@ void Axel()
   numbl++;
     
   PrintFl(z, 4, 1);
+  
   if(printLoRa())
     printAGL(z);
   numbl++;
     
   PrintFl(all, 4, 1);
+  
   if(printLoRa())
     printAGL(all);
+    
   numbl++;
     
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
 
   PrintFl(g.gyro.x, 6, 1);
+
   if(printLoRa())
     printAGL(g.gyro.x);
   numbl++;
@@ -249,16 +253,26 @@ void Axel()
 
 void GPS()
 {
+  numbl=12;
   static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
 
   printInt(gps.satellites.value(), gps.satellites.isValid(), 5);
   printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
   printFloat(gps.location.lat(), gps.location.isValid(), 11, 6);
   printFloat(gps.location.lng(), gps.location.isValid(), 12, 6);
+  if(printLoRa())
+  {
   Serial1.print("lat ");
   printFloat1(gps.location.lat(), gps.location.isValid(), 11, 6);
-  Serial1.print("lng ");
-  printFloat1(gps.location.lng(), gps.location.isValid(), 12, 6);
+  }
+  numbl++;
+  if(printLoRa())
+  {
+    Serial1.print("lng ");
+    printFloat1(gps.location.lng(), gps.location.isValid(), 12, 6);
+  }
+  numbl++;
+  
   printInt(gps.location.age(), gps.location.isValid(), 5);
   
   TinyGPSTime t=gps.time;
@@ -272,8 +286,8 @@ void GPS()
     {
     char sz[32];
     sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
+  
     Serial.print(sz);
-    Serial1.print(sz);
   }
   
   if (!t.isValid())
@@ -285,7 +299,8 @@ void GPS()
     char sz[32];
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
     Serial.print(sz);
-    Serial1.print(sz);
+    if(printLoRa())
+      Serial1.print(sz);
   }
  
   printInt(d.age(), d.isValid(), 5);

@@ -87,10 +87,6 @@ void Dos(){
 
   numbl=30;
   PrintFl(radSens.getRadIntensyDyanmic(), 6, 2);
-  Serial1.print("RI=");
-  Serial1.print(radSens.getRadIntensyDyanmic());
-  Serial1.print(' ');
-
   if(printLoRa())
     printFL2L("RadDy", radSens.getRadIntensyDyanmic());
   numbl++;
