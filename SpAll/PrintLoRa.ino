@@ -3,6 +3,8 @@ int pflag2;
 
 
 
+
+
 inline void setupLoRa() 
 {
 // put your setup code here, to run once:
@@ -36,6 +38,10 @@ void PrintL(){
                     break;
         case 'd': off_print(c);
                     break;
+        case 'g':print_graf_on(c);
+                  break; 
+        case 'a':print_graf_off(c);
+                  break;
         default :
                   Serial1.print("Com is not ...");
           
@@ -44,6 +50,53 @@ void PrintL(){
   }
 }
 
+
+
+void print_graf_off(char* c)
+{
+  if(strcmp(c,"aAll")==0)
+  {if(graf)
+  {
+    graf=false;
+    pflag1=0;
+    pflag2=0;
+  }}else
+  {
+    int n;
+  if(!(n=chusezn(c)))
+     Serial1.println("unknown combination"); 
+  else{
+     if(n<19){
+       if(pflag1&(int)ldexp(1,(n-1)))
+         pflag1=pflag1-(int)ldexp(1,(n-1));
+     }else
+      if(pflag2&(int)ldexp(1,(n-19)))
+        pflag2=pflag2-(int)ldexp(1,(n-19));
+  }
+    
+}
+  
+}
+
+
+void print_graf_on(char* c)
+{
+  if(!graf){
+    graf=true;
+    pflag1=0;
+    pflag2=0;
+  }
+  int n;
+  if(!(n=chusezn(c)))
+     Serial1.println("unknown combination"); 
+  else{
+     if(n<19)
+        pflag1=pflag1|(int)ldexp(1,(n-1));
+     else
+        pflag2=pflag2|(int)ldexp(1,(n-19));
+  }
+
+}
 
 
 
@@ -60,8 +113,8 @@ void print_zn(char* c)
         pflag2=pflag2|(int)ldexp(1,(n-19));
   }
   return;
-
 }
+
 
 void off_print(char* c)
 {
@@ -292,19 +345,19 @@ bool printLoRa()
 
 void printTL(int t, int j)
 {
-
+  if(!graf){
   Serial1.print('T');
   Serial1.print(j);
   Serial1.print('=');
-  Serial1.print('$');
+  }
   Serial1.print(t);
-  Serial1.print(';');
 
 }
 
 void printCountL(int j)
 {
-  Serial1.print("CoT=");
+  if(!graf)
+    Serial1.print("CoT=");
   Serial1.print(j);
   Serial1.print(' ');  
   
@@ -326,11 +379,13 @@ void printHeL(int o)
 void printFL2L(char* n, float v)
 {
 
-  Serial1.print(n);
+ if(!graf)
+ {Serial1.print(n);
   if(n[0] == 'V')
     Serial1.print(numbl+3);
 
   Serial1.print('=');
+ }
   Serial1.print(v,2);
   Serial1.print(' ');
 }
@@ -339,6 +394,8 @@ void printFL2L(char* n, float v)
 
 void printAGL(float A)
 {
+  if(!graf)
+  {
   int i=numbl;
   if(i<19)
      Serial1.print('g');
@@ -347,8 +404,9 @@ void printAGL(float A)
      i=i-4;
   }
   XYZprL(i-15);
-
+  
   Serial1.print('=');
+  }
   Serial1.print(A, 1);
   Serial1.print(' ');
 }
@@ -357,11 +415,14 @@ void printAGL(float A)
 
 void printIntL(char* n, long A)
 {
-  Serial1.print(n);
+  if(!graf)
+  {
+    Serial1.print(n);  
   if( numbl>=23 && numbl<=26)
       XYZprL(numbl-23);
       
   Serial1.print('=');
+  }
   Serial1.print(A);
   Serial1.print(' ');
 

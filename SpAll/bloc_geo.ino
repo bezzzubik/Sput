@@ -5,9 +5,9 @@
 #include <Wire.h>
 #include <MS5611.h>
 
-#define KX 1
-#define KY 1
-#define KZ 1
+#define KX 9.5
+#define KY 9.81
+#define KZ 9.0
 #define adr 0x1E
 #define ss Serial3 
 #define fl Serial2
@@ -90,8 +90,6 @@ void StartComp()
 
 void geo() {
 
-  if(checkBlock(4))
-    GPS();
   if(checkBlock(5))
      Axel();
   if(checkBlock(6))
@@ -194,9 +192,9 @@ void Axel()
   display.clearDisplay();
   display.setCursor(0, 0);
   float x, y, z;
-  x=a.acceleration.x*KX;
-  z=a.acceleration.z*KZ;
-  y=a.acceleration.y*KY;  
+  x=a.acceleration.x*9.81/KX;
+  z=a.acceleration.z*9.81/KZ;
+  y=a.acceleration.y*9.81/KY;  
   double all=sqrt( pow(x, 2) + pow(y, 2) + pow(z, 2) ); 
 
   PrintFl(x, 4, 1);  

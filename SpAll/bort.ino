@@ -113,8 +113,7 @@ int Temp()
       celA=celsius;
       
     if(printLoRa())
-      printTL(celsius, j);
-      
+        printTL(celsius, j);
     PrintIn(celsius, 4);
     
     j++;

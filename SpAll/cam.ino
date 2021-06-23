@@ -16,24 +16,24 @@ void setupCam()
   VT=true;
 }
 
-int s=0;
 
 
 void timeP()
 {
-  int sec = s%84600%60;
-  int mi = (s%(24*60*60))/60%60;
-  int ho = (s%86400)/60/60;
+  int sec = (millis()/1000)%60;
+  int mi = ((millis()/1000)%(24*60*60))/60%60;
+  int ho = ((millis()/1000)%86400)/60/60;
   Serial.print(ho);
   Serial.print(':');
   Serial.print(mi);
   Serial.print(':');
   Serial.print(sec);
+  Serial.print(' ');
 }
 
 void cam()
 {
-  s=(millis()- Time)/1000;
+
    if (VT)
      if( ( millis()- Time >= maxTime) || (VolAk < 10.0) )
         off_cam();
