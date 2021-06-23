@@ -296,7 +296,9 @@ void printTL(int t, int j)
   Serial1.print('T');
   Serial1.print(j);
   Serial1.print('=');
+  Serial1.print('$');
   Serial1.print(t);
+  Serial1.print(';');
 
 }
 
