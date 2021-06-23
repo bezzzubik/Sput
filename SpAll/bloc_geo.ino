@@ -43,7 +43,7 @@ void setupGeo() {
   
   display.display();
   
-//  delay(500);
+//  delay(10);
   
   display.setTextSize(1);
   
@@ -55,12 +55,12 @@ void setupGeo() {
   // Initialize MS5611 sensor
 //  Serial.println("Initialize MS5611 Sensor");
   
-/*  while(!ms5611.begin())
+  while(!ms5611.begin())
   {
   Serial.println("Could not find a valid MS5611 sensor, check wiring!");
-  delay(500);
+  delay(10);
   }
-  */
+ 
   // Get reference pressure for relative altitude
   referencePressure = ms5611.readPressure();
 
@@ -98,7 +98,7 @@ void geo() {
     Compas();
   if(checkBlock(7))
     Pres();
-  delay(300);
+  delay(10);
 }
 
 
@@ -260,17 +260,15 @@ void GPS()
   printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
   printFloat(gps.location.lat(), gps.location.isValid(), 11, 6);
   printFloat(gps.location.lng(), gps.location.isValid(), 12, 6);
-  if(printLoRa())
-  {
-  Serial1.print("lat ");
-  printFloat1(gps.location.lat(), gps.location.isValid(), 11, 6);
-  }
+ 
+    Serial1.print("lat ");
+    printFloat1(gps.location.lat(), gps.location.isValid(), 11, 6);
+ 
   numbl++;
-  if(printLoRa())
-  {
+
     Serial1.print("lng ");
     printFloat1(gps.location.lng(), gps.location.isValid(), 12, 6);
-  }
+
   numbl++;
   
   printInt(gps.location.age(), gps.location.isValid(), 5);
@@ -299,7 +297,7 @@ void GPS()
     char sz[32];
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
     Serial.print(sz);
-    if(printLoRa())
+
       Serial1.print(sz);
   }
  

@@ -1,6 +1,6 @@
 
 void PrintIn(long a, int k)
-{ 
+{ /*
   int len, j;
   char c[32];
   
@@ -26,13 +26,14 @@ void PrintIn(long a, int k)
      c[len]=(a%10)+48;
     a=a/10;
   }
-  Serial.print(c);
+  Serial.print(c);*/
+  Serial.print(a);
   Serial.print(' ');
 }
 
 
 void PrintFl(double f, int k, int l)
-{ 
+{ /*
   int len, j;
   char c[32];
   len=(int)f;
@@ -62,7 +63,8 @@ void PrintFl(double f, int k, int l)
      c[len]=(j%10)+48;
     j=j/10;
   }
-  Serial.print(c);
+  Serial.print(c);*/
+  Serial.print(f, l);
   Serial.print(' ');
 }
 
@@ -81,9 +83,13 @@ void PrintHeat(int i)
 
 void PrintForm()
 {
+  Serial.begin(9600);
+  delay(100);
   Serial.println("Setup...");
-  Serial.print("T1    T2   T3   T4   T5  HEA   I    V1    V2    V3  ");
-  Serial.print(F("Sats HDOP  Latitude   Longitude   Fix  Date       Time     Date Alt    Course Speed Card  Distance Course Card  Chars Sentences Checksum"));
-  Serial.println(F(" Ax   Ay   Az   Aa    Gx     Gy     Gz     Ga    Fx   Fy   Fz   Fa    P       abA     reA     RadD   RadS  NumP gaz   T     Hum "));
-
+  delay(100);
+  Serial.print(F("TimeOn T1 T2 T3 T4 T5 HEA I V1 V2 V3 "));
+  delay(100);
+  Serial.print(F("Sats HDOP Latitude Longitude Fix Date Time Date Alt Course Speed Card Distance Course Card Chars Sentences Checksum"));
+  delay(100);
+  Serial.println(F(" Ax Ay Az Aa Gx Gy Gz Ga Fx Fy Fz Fa P abA reA RadD RadS NumP gaz T Hum"));
 }

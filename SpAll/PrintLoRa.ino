@@ -1,9 +1,9 @@
-int pflag1=3;
-int pflag2=0;
+int pflag1;
+int pflag2;
 
 
 
-void setupLoRa() 
+inline void setupLoRa() 
 {
 // put your setup code here, to run once:
 
@@ -14,32 +14,37 @@ Serial1.begin(9600);
 }
 
 
+String command;
+
 void PrintL(){
-
-char c[10];
-//a=97, z=122
-  if(Serial1.available()!=0){
-    for(int i=0; Serial1.available()!=0; i++)
-       c[i]=Serial1.read();
-    Serial1.println(c);
-  }
-
-  switch (c[0])
-  {
+  Serial1.println("EntCom");
+  for(int j=0; j<20; j++, delay(100)){
+    char c[64];
+    if (Serial1.available()) {
+      command = Serial1.readStringUntil('\n');
+      strcpy(c, command.c_str());
+      Serial1.println(c);
     
-  case 't': on_the_block(c[1]);
-              break;
-  case 'f': off_the_block(c[1]);
-              break;
-  case 'p': print_zn(c);
-              break;
-  case 'd': off_print(c);
-              break;
-  default :
-            Serial1.print("Com is not ...");
-    
+      switch (c[0])
+      {
+        
+        case 't': on_the_block(c[1]);
+                    break;
+        case 'f': off_the_block(c[1]);
+                    break;
+        case 'p': print_zn(c);
+                    break;
+        case 'd': off_print(c);
+                    break;
+        default :
+                  Serial1.print("Com is not ...");
+          
+      }
+    }
   }
 }
+
+
 
 
 void print_zn(char* c)
@@ -48,19 +53,31 @@ void print_zn(char* c)
   int n;
   if(!(n=chusezn(c)))
      Serial1.println("unknown combination"); 
-  else
+  else{
      if(n<19)
-        pflag1=pflag1|(int)ldexp(1,(numbl-1));
+        pflag1=pflag1|(int)ldexp(1,(n-1));
      else
-        pflag2=pflag2|(int)ldexp(1,(numbl-19));
+        pflag2=pflag2|(int)ldexp(1,(n-19));
+  }
   return;
 
 }
 
-void off_print(char c)
+void off_print(char* c)
 {
 
-
+  int n;
+  if(!(n=chusezn(c)))
+     Serial1.println("unknown combination"); 
+  else{
+     if(n<19){
+       if(pflag1&(int)ldexp(1,(n-1)))
+         pflag1=pflag1-(int)ldexp(1,(n-1));
+     }else
+      if(pflag2&(int)ldexp(1,(n-19)))
+        pflag2=pflag2-(int)ldexp(1,(n-19));
+  }
+  return;
   
 }
 
@@ -69,7 +86,7 @@ int chusezn(char* c)
 
   switch(c[1])
   {
-  case 'T': if (strlen(c) != 2)
+  case 'T':if (strlen(c) != 2)
               return chuseT(c[2]);
           break;
   case 'c': return 6;
@@ -258,6 +275,7 @@ void on_the_block(char d)
 
 bool printLoRa()
 {
+  Serial1.print(' ');
   if(numbl<19)
   {  if((int)ldexp(1,(numbl-1))&pflag1)
       return true;
