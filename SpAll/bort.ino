@@ -1,13 +1,12 @@
 #include <OneWire.h>
 
 #define KOF 10 //коэффициент пропорциональности регулятора
-#define TEMPNORM 15 //необходимая температура
+#define TEMPNORM 20 //необходимая температура
 #define acs712_pin A11
 
 
 int zero = 506; // уровень нуля, относительно которого измеряется ток, обычно VCC/2
 float VolAk;
-int Nap=255;
 
 OneWire ds(10);
 
@@ -26,7 +25,7 @@ void setupBort()
 void bort()
 {
 
-  heater( checkBlock(1)?Temp():Nap);
+  heater( (checkBlock(1)||NapR)?Temp():Nap);
    
   if(checkBlock(2))
     Amper();

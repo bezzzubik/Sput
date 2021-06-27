@@ -1,8 +1,6 @@
 #define CAM 44
 unsigned long maxTime = (long) 1000*60*60*3;
 
-unsigned long Time;
-
 bool VT;
 
 void setupCam()
@@ -12,7 +10,6 @@ void setupCam()
   pinMode(33, OUTPUT);
   digitalWrite(CAM, HIGH);
   digitalWrite(33, HIGH);
-  Time=millis();
   VT=true;
 }
 

@@ -1,17 +1,30 @@
 #include <avr/wdt.h>
 #include <avr/eeprom.h>
 
+bool zap=false;
+
+int Nap=255;
+
 int numbl=0;
 
+bool NapR=false;
+
 bool graf=false;
+
+bool boD=true;
+
+unsigned long Time=millis();
+
+
+int k;
+
 
 void setup() {
 
 //  pinMode(11, OUTPUT);
   wdt_disable();
   Serial.begin(9600);
-
-  //checkStart();
+  checkStart();
   delay(100);
   PrintForm();
   
@@ -26,19 +39,20 @@ void setup() {
   EndB(0);
   delay(100);
 }
-
-
 byte a=0;
 
-
 void loop() {
-   
+
+
    if(a){
       PrintL();
       a=0;
    }else
       a=1;
 
+   Rez();
+   if(startZ())
+   {
    timeP();
    if(checkBlock(4))
     GPS();
@@ -61,6 +75,7 @@ void loop() {
 
    Serial1.println();
    Serial.println();
-   Zer();
+   }
+   delay(800);
    wdt_reset();
 }

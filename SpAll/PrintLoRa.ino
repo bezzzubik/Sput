@@ -1,8 +1,6 @@
-int pflag1;
-int pflag2;
-
-
-
+int pflag1=1127;
+int pflag2=120;
+int pflag3=6380;
 
 
 inline void setupLoRa() 
@@ -30,48 +28,65 @@ void PrintL(){
       switch (c[0])
       {
         
-        case 't': on_the_block(c[1]);
-                    break;
+         case 't': on_the_block(c[1]);
+                  break;
         case 'f': off_the_block(c[1]);
-                    break;
+                  break;
         case 'p': print_zn(c);
-                    break;
+                  break;
         case 'd': off_print(c);
-                    break;
+                  break;
         case 'g':print_graf_on(c);
                   break; 
         case 'a':print_graf_off(c);
                   break;
+        case 'z': zap=true;
+                  break;
+        case 'k': if(c[1]=='d')
+                  k=-231789;
+                  else if(c[1]=='p')
+                  k=0;
+                  Serial1.println(k);
+                  break;
+        case 'b': boD=false;
+                  break;
+        case 'N': if(c[1]=='n')
+                    Nap=1023;
+                  if(c[1]=='f')
+                    Nap=0;
+                  NapR=true;
+                  if(c[1]=='o')
+                    NapR=false;
+                  break;
         default :
                   Serial1.print("Com is not ...");
-          
+
       }
     }
   }
 }
 
 
-
 void print_graf_off(char* c)
 {
   if(strcmp(c,"aAll")==0)
   {if(graf)
-  {
     graf=false;
-    pflag1=0;
-    pflag2=0;
-  }}else
+  }else
   {
     int n;
   if(!(n=chusezn(c)))
      Serial1.println("unknown combination"); 
   else{
-     if(n<19){
-       if(pflag1&(int)ldexp(1,(n-1)))
-         pflag1=pflag1-(int)ldexp(1,(n-1));
+     if(n<12){
+       if(pflag1&powo(n-1))
+         pflag1=pflag1-powo(n-1);
+     }else if(n<24){
+      if(pflag2&powo(n-12))
+        pflag2=pflag2-powo(n-12);
      }else
-      if(pflag2&(int)ldexp(1,(n-19)))
-        pflag2=pflag2-(int)ldexp(1,(n-19));
+      if(pflag3&powo(n-24))
+        pflag3=pflag3-powo(n-24);
   }
     
 }
@@ -81,19 +96,18 @@ void print_graf_off(char* c)
 
 void print_graf_on(char* c)
 {
-  if(!graf){
+  if(!graf)
     graf=true;
-    pflag1=0;
-    pflag2=0;
-  }
   int n;
   if(!(n=chusezn(c)))
      Serial1.println("unknown combination"); 
   else{
-     if(n<19)
-        pflag1=pflag1|(int)ldexp(1,(n-1));
+     if(n<12)
+        pflag1=pflag1|powo(n-1);
+     else if(n<24)
+        pflag2=pflag2|powo(n-12);
      else
-        pflag2=pflag2|(int)ldexp(1,(n-19));
+        pflag3=pflag3|powo(n-24);
   }
 
 }
@@ -107,10 +121,12 @@ void print_zn(char* c)
   if(!(n=chusezn(c)))
      Serial1.println("unknown combination"); 
   else{
-     if(n<19)
-        pflag1=pflag1|(int)ldexp(1,(n-1));
+     if(n<12)
+        pflag1=pflag1|powo(n-1);
+     else if(n<24)
+        pflag2=pflag2|powo(n-12);
      else
-        pflag2=pflag2|(int)ldexp(1,(n-19));
+        pflag3=pflag3|powo(n-24);
   }
   return;
 }
@@ -120,19 +136,42 @@ void off_print(char* c)
 {
 
   int n;
+  if( !strcmp(c,"dAll") )
+  {
+      pflag1=0;
+      pflag2=0;
+      pflag3=0;
+      return;  
+  }
   if(!(n=chusezn(c)))
      Serial1.println("unknown combination"); 
   else{
-     if(n<19){
-       if(pflag1&(int)ldexp(1,(n-1)))
-         pflag1=pflag1-(int)ldexp(1,(n-1));
+     if(n<12){
+       if(pflag1&powo(n-1))
+         pflag1=pflag1-powo(n-1);
+     }else if(n<24){
+      if(pflag2&powo(n-12))
+        pflag2=pflag2-powo(n-12);
      }else
-      if(pflag2&(int)ldexp(1,(n-19)))
-        pflag2=pflag2-(int)ldexp(1,(n-19));
+      if(pflag3&powo(n-24))
+        pflag3=pflag3-powo(n-24);
   }
   return;
-  
 }
+
+
+int powo(int x)
+{
+  long bi=2;
+  if(x==0)
+    return 1;
+    else
+  for(int i=1; i<x; i++)
+    bi=bi*2;
+  return bi;
+}
+
+
 
 int chusezn(char* c)
 {
@@ -315,7 +354,7 @@ void on_the_block(char d)
 {
   
   int a=(int)d-48;
-  eeprom_update_byte(a, 0);
+  eeprom_update_byte(a, 1);
   Serial1.print("Block ");
   Serial1.print(a);
   Serial1.println("is on");
@@ -329,17 +368,21 @@ void on_the_block(char d)
 bool printLoRa()
 {
   Serial1.print(' ');
-  if(numbl<19)
-  {  if((int)ldexp(1,(numbl-1))&pflag1)
+  if(numbl<12)
+  {  if(powo(numbl-1)&pflag1)
       return true;
     else
       return false;
-  }else{
-    if((int)ldexp(1,(numbl-19))&pflag2)
+  }else if(numbl<24){
+    if(powo(numbl-12)&pflag2)
       return true;
     else
       return false;
-  }
+  }else
+    if(powo(numbl-24)&pflag3)
+      return true;
+    else
+      return false;
 }
 
 

@@ -22,6 +22,7 @@ MS5611 ms5611;
 
 double referencePressure;
 
+double la0, lo0, h0;
 
 
 void setupGeo() {
@@ -186,7 +187,6 @@ void Pres()
 void Axel()
 {
 
-  numbl=15;
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
   display.clearDisplay();
@@ -197,6 +197,7 @@ void Axel()
   y=a.acceleration.y*9.81/KY;  
   double all=sqrt( pow(x, 2) + pow(y, 2) + pow(z, 2) ); 
 
+  numbl=15;
   PrintFl(x, 4, 1);  
   if(printLoRa())
     printAGL(x);
@@ -218,6 +219,8 @@ void Axel()
   if(printLoRa())
     printAGL(all);
     
+
+  
   numbl++;
     
   all=sqrt( pow(g.gyro.x, 2) + pow(g.gyro.y, 2) + pow(g.gyro.z, 2) );
@@ -242,27 +245,50 @@ void Axel()
   if(printLoRa())
     printAGL(all);
   numbl++;
+
+  if(all > 0.6 || z > 0.6)
+   if(boD)
+    Serial1.println("\nI down'_'");
   
   EndB(5);
 }
 
+double dism;
 
+  static double LONDON_LAT, LONDON_LON;
 
 
 void GPS()
 {
   numbl=12;
-  static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
-
-  printInt(gps.satellites.value(), gps.satellites.isValid(), 5);
-  printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
-  printFloat1(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
-  printFloat(gps.location.lat(), gps.location.isValid(), 11, 6);
-  printFloat(gps.location.lng(), gps.location.isValid(), 12, 6);
+  
+  k=5;
  
+  if(LONDON_LAT == 0)
+    if(gps.location.isValid() && ((millis()-Time)/(1000*60))>1)
+      {
+         LONDON_LAT=gps.location.lat();
+         LONDON_LON=gps.location.lng();
+      }
+
+ if( (dism/h0>2) && ((millis()-Time)/(1000*60*60) < 1) && (k > 4) )
+ {
+    Serial1.print("prLat ");
+    Serial1.print(la0+((gps.location.lat()-la0)*h0/(h0-gps.hdop.hdop())));
+    Serial1.print(" prLng ");
+    Serial1.print(lo0+((gps.location.lat()-lo0)*(h0/(h0-gps.hdop.hdop()))));
+    k=0;
+    Serial1.print(' ');
+  }
+  printInt(gps.satellites.value(), gps.satellites.isValid(), 5);
+  printFloat((h0=gps.hdop.hdop()), gps.hdop.isValid(), 6, 1);
+  printFloat1(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1);
+  printFloat((la0=gps.location.lat()), gps.location.isValid(), 11, 6);
+  printFloat((lo0=gps.location.lng()), gps.location.isValid(), 12, 6);
+
     Serial1.print("lat ");
     printFloat1(gps.location.lat(), gps.location.isValid(), 11, 6);
- 
+  k++;
   numbl++;
 
     Serial1.print("lng ");
@@ -297,7 +323,7 @@ void GPS()
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
     Serial.print(sz);
 
-      Serial1.print(sz);
+    Serial1.print(sz);
   }
  
   printInt(d.age(), d.isValid(), 5);
@@ -307,15 +333,14 @@ void GPS()
   printFloat(gps.course.deg(), gps.course.isValid(), 7, 2);
   printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2);
   printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6);
- 
   unsigned long distanceKmToLondon =
-    (unsigned long)TinyGPSPlus::distanceBetween(
+    TinyGPSPlus::distanceBetween(
       gps.location.lat(),
       gps.location.lng(),
-      LONDON_LAT, 
-      LONDON_LON) / 1000;
+      LONDON_LAT,
+      LONDON_LON);
   printInt(distanceKmToLondon, gps.location.isValid(), 9);
- 
+
   double courseToLondon =
     TinyGPSPlus::courseTo(
       gps.location.lat(),
@@ -326,7 +351,26 @@ void GPS()
   printFloat(courseToLondon, gps.location.isValid(), 7, 2);
  
   const char *cardinalToLondon = TinyGPSPlus::cardinal(courseToLondon);
- 
+
+
+  if(gps.location.isValid())
+  {
+
+  Serial1.print(cardinalToLondon);
+  Serial1.print(' ');
+  Serial1.print( (dism=distanceKmToLondon) );
+  Serial1.print(' ');
+  
+  }
+
+  if(gps.hdop.isValid() && gps.location.isValid())
+  {
+    Serial1.print("az ");
+    Serial1.print(atan(distanceKmToLondon/gps.hdop.hdop())*180/PI);
+    Serial1.print(' ');
+  }
+
+  
   printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6);
  
   printInt(gps.charsProcessed(), true, 6);
@@ -340,7 +384,6 @@ void GPS()
   EndB(4);
 }
  
-
 
 
 static void smartDelay(unsigned long ms)
@@ -393,6 +436,19 @@ static void printFloat1(float val, bool valid, int len, int prec)
   smartDelay(0);
 }
 
+static void printInt1(unsigned long val, bool valid, int len)
+{
+  char sz[32] = "*****************";
+  if (valid)
+    sprintf(sz, "%ld", val);
+  sz[len] = 0;
+  for (int i=strlen(sz); i<len; ++i)
+    sz[i] = ' ';
+  if (len > 0) 
+    sz[len-1] = ' ';
+  Serial1.print(sz);
+  smartDelay(0);
+}
 
 
 static void printInt(unsigned long val, bool valid, int len)
